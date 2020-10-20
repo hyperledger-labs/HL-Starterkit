@@ -1,0 +1,205 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  {ORD_NAME0}.{DOMAIN_NAME}:
+    container_name: {ORD_NAME0}.{DOMAIN_NAME}
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/tls/:/var/hyperledger/orderer/tls
+        - {ORD_NAME0}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+      - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/fabric/tls
+        - {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+      - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/fabric/tls
+        - {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:/var/hyperledger/production
+
+    ports:
+      - 8051:8051
+
+  {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:10051
+      - CORE_PEER_LOCALMSPID={ORG_2_C}MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/tls:/etc/hyperledger/fabric/tls
+        - {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:/var/hyperledger/production
+    ports:
+      - 9051:9051
+
+  {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID={PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS={PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:10051
+      - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051
+      - CORE_PEER_LOCALMSPID={ORG_2_C}MSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}/tls:/etc/hyperledger/fabric/tls
+        - {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:/var/hyperledger/production
+    ports:
+      - 10051:10051
+
+# <!-- BEGIN Peer0 - Adding  -->
+  {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:
+      container_name: {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}
+      extends:
+        file: peer-base.yaml
+        service: peer-base
+      environment:
+        - CORE_PEER_ID={PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}
+        - CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:11051
+        - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
+        - CORE_PEER_CHAINCODEADDRESS={PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:11052
+        - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:11051
+        - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:12051
+        - CORE_PEER_LOCALMSPID={{ORG_3_C}MSP
+        - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+        # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+        # provide the credentials for ledger to connect to CouchDB.  The username and password must
+        # match the username and password set for the associated CouchDB.
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+      
+      volumes:
+          - /var/run/:/host/var/run/
+          - ../crypto-config/peerOrganizations/{ORG_3}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric/msp
+          - ../crypto-config/peerOrganizations/{ORG_3}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}/tls:/etc/hyperledger/fabric/tls
+          - {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:/var/hyperledger/production
+      ports:
+        - 11051:11051
+# <!-- END Peer0 - Adding  -->
+# <!-- BEGIN Peer1 - Adding  -->
+  {PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:
+      container_name: {PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}
+      extends:
+        file: peer-base.yaml
+        service: peer-base
+      environment:
+        - CORE_PEER_ID={PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}
+        - CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:12051
+        - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
+        - CORE_PEER_CHAINCODEADDRESS={PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:12052
+        - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
+        - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:12051
+        - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:11051
+        - CORE_PEER_LOCALMSPID={ORG_3_C}MSP
+        - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb3:5984
+        # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+        # provide the credentials for ledger to connect to CouchDB.  The username and password must
+        # match the username and password set for the associated CouchDB.
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+        - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+  
+      volumes:
+          - /var/run/:/host/var/run/
+          - ../crypto-config/peerOrganizations/{ORG_3}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric/msp
+          - ../crypto-config/peerOrganizations/{ORG_3}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}/tls:/etc/hyperledger/fabric/tls
+          - {PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:/var/hyperledger/production
+      ports:
+        - 12051:12051
+# <!-- END Peer1 - Adding  -->

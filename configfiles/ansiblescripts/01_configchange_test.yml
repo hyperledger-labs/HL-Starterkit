@@ -1,0 +1,55 @@
+- name: Network Getting Started to extend the configtx_v14.yaml file
+#gather_facts: true
+  hosts: localhost
+  vars:
+    find_this: "[*{]ORG_2_C[}]"
+    insert_this: "- *{ORG_3_C}"
+    filename: "./configtx_v14.org1111.yaml"
+  tasks:
+      - name: Ansible copy file to remote server 
+        copy:
+         src: ./configtx_v14.orgsrc.yaml
+         dest: ./configtx_v14.org1111.yaml
+
+      - name: test by shell
+        shell: 
+          cmd: cat configtx_v14.org1111.yaml | grep "*{ORG_2_C}"
+        register: find_this1
+      - debug: var=find_this1.stdout_lines
+  
+      - name: multiline match and insert
+        replace: >
+          dest={{ filename }}
+          regexp="^({{ find_this }}\n)(?!{{ insert_this }})"
+          replace="\1{{ insert_this }}\n"
+        register: chek
+      - name: testing
+        debug: 
+         msg: "{{ chek }}"
+
+      - name: Ensure we have our own comment added to /etc/services
+        lineinfile:
+           dest: ./configtx_v14.org1111.yaml
+           insertafter: '[*{]ORG_2_C[}]' #
+           line: '                    - *{ORG_3_C$asdf}'
+           backup: yes
+      - name: Update the file
+        lineinfile:
+          dest: test.file
+          line: '    This is template'
+          insertafter: ' Earth .* '
+      - name: Add 'Hi there' after directory def if not present
+        replace:
+          path: ./configtx_v14.org1111.yaml
+          regexp: '^(                    [-] [*{]ORG_2_C[}]\n)(?!Hithere)'
+          replace: '\1Hithere\n'
+
+          #sed -i.bak '/*{ORG_2_C\+/{s@^\( \+\)@\1- *{ORG_3_C_SED}\n\1@}' configtx_v14.org1111.yaml
+
+      - name: Replace
+        replace:
+            path: ./configtx_v14.org1111.yaml
+            regexp: '[*]{ORG_2_C}\n(?!{{repl_str}})'
+            replace: '*{ORG_2_C}\n{{repl_str}}'
+        vars:
+          repl_str: '                    - *{ORG_3_C$Myansi}\n'

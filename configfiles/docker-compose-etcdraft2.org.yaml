@@ -1,0 +1,77 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  {ORD_NAME1}.{DOMAIN_NAME}:
+  {ORD_NAME2}.{DOMAIN_NAME}:
+  {ORD_NAME3}.{DOMAIN_NAME}:
+  {ORD_NAME4}.{DOMAIN_NAME}:
+
+networks:
+  byfn:
+
+services:
+
+  {ORD_NAME1}.{DOMAIN_NAME}:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: {ORD_NAME1}.{DOMAIN_NAME}
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME1}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME1}.{DOMAIN_NAME}/tls/:/var/hyperledger/orderer/tls
+        - {ORD_NAME1}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
+    ports:
+    - 8050:7050
+
+  {ORD_NAME2}.{DOMAIN_NAME}:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: {ORD_NAME2}.{DOMAIN_NAME}
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}.{DOMAIN_NAME}/tls/:/var/hyperledger/orderer/tls
+        - {ORD_NAME2}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
+    ports:
+    - 9050:7050
+
+  {ORD_NAME3}.{DOMAIN_NAME}:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: {ORD_NAME3}.{DOMAIN_NAME}
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME3}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME3}.{DOMAIN_NAME}/tls/:/var/hyperledger/orderer/tls
+        - {ORD_NAME3}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
+    ports:
+    - 10050:7050
+
+  {ORD_NAME4}.{DOMAIN_NAME}:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: {ORD_NAME4}.{DOMAIN_NAME}
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME4}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME4}.{DOMAIN_NAME}/tls/:/var/hyperledger/orderer/tls
+        - {ORD_NAME4}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
+    ports:
+    - 11050:7050

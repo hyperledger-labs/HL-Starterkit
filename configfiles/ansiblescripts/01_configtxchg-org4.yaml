@@ -1,0 +1,19 @@
+- name: Network Getting Started to extend the configtx_v14.yaml file
+#gather_facts: true
+  hosts: localhost
+  tasks:
+    - name: filtering for org
+      shell:  cat ../../.hlc.env | grep ORG
+      register: orgcheck
+    - name: Inserting the ORG 4
+      blockinfile:
+        marker: "<!-- {mark} 4ANSIBLE MANAGED BLOCK4 -->"
+        #insertafter: "<!-- END 3ANSIBLE MANAGED BLOCK3 -->"
+        insertafter: "Port: 12051"
+        block: "{{ lookup('file', './configtx_org4.txt') }}"
+        dest: ./configtx_v14.org.yaml
+        #firstmatch: yes
+        #state: present
+        backup: yes
+      when: orgcheck.stdout is search('ORG_4') != -1
+      #check_mode: yes

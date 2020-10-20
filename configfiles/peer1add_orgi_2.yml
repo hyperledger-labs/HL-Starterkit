@@ -1,0 +1,9 @@
+  {PEER_1}.{ORG_9}.{DOMAIN_NAME}:
+      container_name: {PEER_1}.{ORG_9}.{DOMAIN_NAME}
+      extends:
+        file:  base/docker-compose-base.yaml
+        service: {PEER_1}.{ORG_9}.{DOMAIN_NAME}
+      depends_on:
+        - couchdb3
+      networks:
+        - byfn

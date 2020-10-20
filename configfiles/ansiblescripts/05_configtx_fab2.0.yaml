@@ -1,0 +1,127 @@
+---
+    - hosts: localhost
+      ignore_errors: true
+  
+    - name: Updating the Configtx file Configurations for Fabric 2.0 syntax
+      hosts: localhost
+      vars:
+        find_this: "    - &{ORG_1_C}"
+        nested_list:
+          - - "        OrdererEndpoints:"
+            - "            - {ORD_NAME0}.{DOMAIN_NAME}:7050"
+            - "  "
+        filename: "./configtx_v20.org.yaml"
+  
+      tasks:
+         - name: Ansible copy file from source crypto-config file
+           copy:
+            src: ./configtx_v14.orgsrc.yaml
+            dest: ./configtx_v20.org.yaml
+
+         - name: filtering for fab2.0 IMAGE_TAG=2.2.0
+           shell:  cat ../../.hlc.env | grep IMAGE_TAG 
+           register: fabricvercheck
+           ignore_errors: true
+  
+
+         - name: Add endorser for org1 names to configtx file
+           blockinfile:
+             marker: "#<!-- {mark} 4ANSIBLE MANAGED BLOCK4 for Org1 -->"
+             path: ./configtx_v20.org.yaml
+             insertbefore: " # leave this flag set to true."
+             #when: fabricvercheck.stdout is search('2.2.0') #!= -1
+             block: |
+                        # Endorsement
+                                    Endorsement:
+                                        Type: Signature
+                                        Rule: "OR('{ORG_1_C}MSP.peer')"
+           when: fabricvercheck.stdout is search('2.2.0') #!= -1
+
+         - name: Add Orderer names to configtx file
+           lineinfile:
+             #backrefs: yes
+             dest: ./configtx_v20.org.yaml
+             insertbefore: "{{ find_this }}"
+             #regexp: "{{ find_this }}"
+             firstmatch: yes
+             line: "{{ item }}"
+           with_items: "{{ nested_list }}"
+           when: fabricvercheck.stdout is search('2.2.0') #!= -1
+
+         - name: Add endorser for org2 names to configtx file
+           blockinfile:
+             marker: "#<!-- {mark} 2ANSIBLE MANAGED BLOCK2 for Org2 -->"
+             dest: ./configtx_v20.org.yaml
+             insertbefore: "# Insert here for ORG2 endorsement"
+             #when: fabricvercheck.stdout is search('2.2.0') #!= -1
+             block: |
+                        # Endorsement
+                                    Endorsement:
+                                        Type: Signature
+                                        Rule: "OR('{ORG_2_C}MSP.peer')"
+           when: fabricvercheck.stdout is search('2.2.0') #!= -1
+
+         - name: Add block endorser for applications Capabilites  to configtx file
+           blockinfile:
+             marker: "#<!-- {mark} 4ANSIBLE MANAGED BLOCK4 for App Capabilites -->"
+             dest: ./configtx_v20.org.yaml
+             insertbefore: "#Here insert for Application Capabilites insert before"
+             #when: fabricvercheck.stdout is search('2.2.0') #!= -1
+             block: |
+                        # Endorsement
+                                LifecycleEndorsement:
+                                    Type: ImplicitMeta
+                                    Rule: "MAJORITY Endorsement"
+                                Endorsement:
+                                    Type: ImplicitMeta
+                                    Rule: "MAJORITY Endorsement"
+           when: fabricvercheck.stdout is search('2.2.0') #!= -1
+
+         - name: filtering for fab2.0 ORDER > 3
+           shell:  cat ../../.hlc.env | grep ORDCOUNT
+           register: ordcountcheck
+           ignore_errors: true
+
+         - name: Insering line for addon org for volume file peer0
+           lineinfile:
+             dest: ../docker-compose-cli-org.yaml
+             insertafter: '  {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:'
+             firstmatch: yes
+             #line: "  {ORD_NAME1}.{DOMAIN_NAME}:"
+             line: "{{ item }}"
+           with_items: 
+             - "  {ORD_NAME1}.{DOMAIN_NAME}:"
+             - "  {ORD_NAME2}.{DOMAIN_NAME}:"
+             - "  {ORD_NAME3}.{DOMAIN_NAME}:"
+             - "  {ORD_NAME4}.{DOMAIN_NAME}:"
+           when: ordcountcheck.stdout is search('4')
+
+
+#
+        # - name: Add endorser for org2 names to configtx file
+        #   lineinfile:
+        #     #backrefs: yes
+        #     dest: ./configtx_v20.org.yaml
+        #     insertbefore: "# Insert here for ORG2 endorsement"
+        #     #regexp: "{{ find_this }}"
+        #     firstmatch: yes
+        #     line: "{{ item }}"
+        #   with_items: 
+        #     - "            Endorsement:"
+        #     - "                Type: Signature"
+        #     - "                Rule: \"OR('{ORG_2_C}MSP.peer')\""
+        #   when: fabricvercheck.stdout is search('2.2.0') #!= -1
+#
+        # - name: Add endorser for org1 names to configtx file
+        #   lineinfile:
+        #     #backrefs: yes
+        #     dest: ./configtx_v20.org.yaml
+        #     insertbefore: " # leave this flag set to true."
+        #     #regexp: "{{ find_this }}"
+        #     firstmatch: yes
+        #     line: "{{ item }}"
+        #   with_items: 
+        #     - "            Endorsement:"
+        #     - "                Type: Signature"
+        #     - "                Rule: \"OR('{ORG_1_C}MSP.peer')\""
+        #   when: fabricvercheck.stdout is search('2.2.0') #!= -1

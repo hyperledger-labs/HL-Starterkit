@@ -1,0 +1,35 @@
+
+    - &{ORG_3_C}
+        # DefaultOrg defines the organization which is used in the sampleconfig
+        # of the fabric.git development environment
+        Name: {ORG_3_C}MSP
+
+        # ID to load the MSP definition as
+        ID: {ORG_3_C}MSP
+
+        MSPDir: crypto-config/peerOrganizations/{ORG_3}.{DOMAIN_NAME}/msp
+
+        # turn off security for the peer
+        #AdminPrincipal: Role.MEMBER
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('{ORG_3_C}MSP.admin', '{ORG_3_C}MSP.peer', '{ORG_3_C}MSP.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('{ORG_3_C}MSP.admin', '{ORG_3_C}MSP.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('{ORG_3_C}MSP.admin')"
+                
+        # Insert here for  endorsement ORG_3
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}
+              Port: 12051
