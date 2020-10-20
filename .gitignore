@@ -12,7 +12,7 @@
 channel-artifacts
 crypto-config
 explorer/examples/net1/crypto
-scripts
+./scripts
 ./org1
 ./org2
 *tar.gz
