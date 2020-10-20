@@ -1,0 +1,167 @@
+---
+    #- hosts: localhost
+    #  connection: local
+    #  ignore_errors: true
+    #  remote_user: root
+    #  become: true
+    #  tasks:
+  - name: Network Getting Started to extend the configtx_v14.yaml file
+    #gather_facts: true
+    hosts: localhost
+    vars:
+      find_this: "- *{ORG_2_C}"
+      insert_this: "- *{ORG_3_C}"
+      filename: "./configtx_v20.org.yaml"
+
+
+    tasks:
+       - name: Ansible copy file from source crypto-config file
+         copy:
+          src: ./configtx_v14.orgsrc.yaml
+          dest: ./configtx_v20.org.yaml
+
+       - name: filtering for org
+         shell:  cat ../../.hlc.env | grep ORG_3
+         register: orgcheck
+         ignore_errors: true
+       
+       #- name: testing
+       #  debug: 
+       #   msg: "{{ orgcheck }}"
+       - name: Ansible copy file to homepath  - Crypto-config
+         copy:
+          src: ./crypto-config.orgsrc.yaml
+          dest: ../../crypto-config.org.yaml 
+
+       - name: Inserting the ORG 3 configtx
+         blockinfile:
+           marker: "# <!-- {mark} ANSIBLE MANAGED BLOCK ravinayag  -->"
+           insertafter: "Port: 9051"
+           #state: present
+           block: "{{ lookup('file', './configtx_org3.txt') }}"
+           dest: ./configtx_v20.org.yaml
+           backup: yes
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+         #when: orgcheck.rc != ''
+
+       - name: Inserting the ORG3  to crypto files
+         blockinfile:
+           marker: "# <!-- {mark} ANSIBLE MANAGED BLOCK by ravinayag -->"
+           insertafter: EOF
+           #state: present
+           block: "{{ lookup('file', './crypto-config-org3.txt') }}"
+           dest: ./crypto-config.org.yaml
+           backup: yes
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+
+       - name: test by shell for sed
+         shell: 
+           cmd: sed -i.bak '/*{ORG_2_C\+/{s@^\( \+\)@\1- *{ORG_3_C}\n\1@}' configtx_v20.org.yaml
+         register: sedout
+
+       - name: Adding the Orgs to Docker compose files peer0
+         blockinfile:
+           marker: "# <!-- {mark} Peer0 - Adding  -->"
+           insertafter: EOF
+           #state: present
+           block: "{{ lookup('file', '../base/peer0addorg3.yaml') }}"
+           dest: ../base/docker-compose-base-org.yaml
+           backup: yes
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+
+       - name: Adding the Orgs to Docker compose files peer1
+         blockinfile:
+           marker: "# <!-- {mark} Peer1 - Adding  -->"
+           insertafter: EOF
+           #state: present
+           block: "{{ lookup('file', '../base/peer1addorg3.yaml') }}"
+           dest: ../base/docker-compose-base-org.yaml
+           #backup: yes
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+
+       - name: Adding the Orgs to Docker compose files peer0-cli yamlfile
+         blockinfile:
+           marker: "# <!-- {mark} Peer0 - Adding  -->"
+           insertafter: EOF
+           #state: present
+           block: "{{ lookup('file', '../base/peer0addorgcli3.yaml') }}"
+           dest: ../docker-compose-cli-org.yaml
+           backup: yes
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+
+       - name: Adding the Orgs to Docker compose files peer1-cli yamlfile
+         blockinfile:
+           marker: "# <!-- {mark} Peer1 - Adding  -->"
+           insertafter: EOF
+           #state: present
+           block: "{{ lookup('file', '../base/peer1addorgcli3.yaml') }}"
+           dest: ../docker-compose-cli-org.yaml
+           #backup: yes
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+
+       - name: Insering line for addon org for volume file peer0
+         lineinfile:
+           dest: ../docker-compose-cli-org.yaml
+           insertafter: '  {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:'
+           firstmatch: yes
+           line: "  {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:"
+         when: orgcheck.stdout is search('ORG_3')
+
+       - name: Insering line for addon org for volume file peer0
+         lineinfile:
+           dest: ../docker-compose-cli-org.yaml
+           insertafter: '  {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:'
+           firstmatch: yes
+           line: "  {PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:"
+
+       - name: Add endorser for org3 names to configtx file
+         blockinfile:
+           marker: "<!-- {mark} 2ANSIBLE MANAGED BLOCK2 for Org3 -->"
+           dest: ./configtx_v20.org.yaml
+           insertbefore: "# Insert here for  endorsement ORG_3"
+           #when: fabricvercheck.stdout is search('2.2.0') #!= -1
+           block: |
+                      # Endorsement
+                                  Endorsement:
+                                      Type: Signature
+                                      Rule: "OR('{ORG_3_C}MSP.peer')"
+         when: orgcheck.stdout is search('ORG_3') #!= -1
+        
+      # - name: multiline match and insert
+      #   replace: >
+      #     dest={{ filename }}
+      #     regexp="^({{ find_this }}\n)(?!{{ insert_this }})"
+      #     replace="\1{{ insert_this }}\n"
+      #   register: chek
+      # - name: testing
+      #   debug: 
+      #    msg: "{{ chek }}"
+
+      # - name: Ensure we have our own comment added to /etc/services
+      #   lineinfile:
+      #     dest: ./configtx_v14.org.yaml
+      #     insertafter: '                    - *{ORG_2_C}'
+      #     #regexp: '\                    - *{ORG_2_C}'
+      #     #insertafter: '- *{ORG_2_C}' #and 
+      #     #insertbefore: "PatientOrdererGenesis:"
+      #     #state: present
+      #     line: "                    - *{ORG_3_C}"
+      #     #firstmatch: yes
+      #     backup: yes
+      #   #check_mode: yes
+         
+
+      # - name: Inserting the ORG 4
+      #   blockinfile:
+      #     marker: "<!-- {mark} 4ANSIBLE MANAGED BLOCK4 -->"
+      #     #insertafter: "<!-- END 3ANSIBLE MANAGED BLOCK3 -->"
+      #     insertafter: "^Port: 12051"
+      #     block: "{{ lookup('file', './configtx_org4.txt') }}"
+      #     dest: ./configtx_v14.org.yaml
+      #     #firstmatch: yes
+      #     state: present
+      #     backup: yes
+      #   when: orgcheck.stdout is search('ORG_4') != -1
+      #   check_mode: yes
+
+

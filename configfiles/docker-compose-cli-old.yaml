@@ -1,0 +1,149 @@
+version: '2'
+
+services:
+  {CA_ORG1}.{ORG_1}.{DOMAIN_NAME}:
+    image: hyperledger/fabric-ca:{ARCH}
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME={CA_ORG1}.{ORG_1}.{DOMAIN_NAME}
+#      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/{ORG_1}.{DOMAIN_NAME}-cert.pem
+#      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY}
+
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/{CA_ORG1}.{ORG_1}.{DOMAIN_NAME}-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY} -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: {CA_ORG1}.{ORG_1}.{DOMAIN_NAME}
+
+  {ORD_NAME0}.{DOMAIN_NAME}:
+    container_name: {ORD_NAME0}.{DOMAIN_NAME}
+    image: hyperledger/fabric-orderer:{ARCH}
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    ports:
+      - 7050:7050
+    volumes:
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp/orderer/msp
+
+  {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+    image: hyperledger/fabric-peer:{ARCH}
+    environment:
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+#      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+#      - CORE_PEER_CHAINCODEADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7052
+#      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+#      - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+#      - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+      - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start #--peer-defaultchain=false
+    ports:
+      - 7051:7051
+      - 7053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/peer/msp
+        - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/msp/users
+    depends_on:
+      - {ORD_NAME0}.{DOMAIN_NAME}
+      - couchdb
+
+  couchdb:
+    container_name: couchdb
+    image: hyperledger/fabric-couchdb:{DBARCH}
+    ports:
+      - 5984:5984
+    environment:
+      DB_URL: http://localhost:5984/member_db
+
+
+  {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
+    image: hyperledger/fabric-peer:{ARCH}
+    environment:
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+      - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start #--peer-defaultchain=false
+    ports:
+      - 8051:7051
+      - 8053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/peer/msp
+        - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/msp/users
+    depends_on:
+      - {ORD_NAME0}.{DOMAIN_NAME}
+      - couchdb1
+
+  couchdb1:
+    container_name: couchdb1
+    image: hyperledger/fabric-couchdb:{DBARCH}
+    ports:
+      - 6984:5984
+    environment:
+      DB_URL: http://localhost:6984/member_db
+
+  {PEER_NAME2}.{ORG_1}.{DOMAIN_NAME}:
+    container_name: {PEER_NAME2}.{ORG_1}.{DOMAIN_NAME}
+    image: hyperledger/fabric-peer:{ARCH}
+    environment:
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID={PEER_NAME2}.{ORG_1}.{DOMAIN_NAME}
+      - CORE_PEER_ADDRESS={PEER_NAME2}.{ORG_1}.{DOMAIN_NAME}:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=composer_default
+      - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/peer/msp
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb2:5984
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start #--peer-defaultchain=false
+    ports:
+      - 9051:7051
+      - 9053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./:/etc/hyperledger/configtx
+        - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME2}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/peer/msp
+        - ./crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/msp/users
+    depends_on:
+      - {ORD_NAME0}.{DOMAIN_NAME}
+      - couchdb2
+
+  couchdb2:
+    container_name: couchdb2
+    image: hyperledger/fabric-couchdb:{DBARCH}
+    ports:
+      - 7984:5984
+    environment:
+      DB_URL: http://localhost:7984/member_db

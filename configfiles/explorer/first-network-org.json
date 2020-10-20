@@ -1,0 +1,66 @@
+{
+	"name": "first-network",
+	"version": "1.0.0",
+	"client": {
+		"tlsEnable": true,
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw"
+		},
+		"enableAuthentication": false,
+		"organization": "{ORG_1_C}MSP",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"{CHANNEL_NAME1}": {
+			"peers": {
+				"{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}": {}
+			},
+			"connection": {
+				"timeout": {
+					"peer": {
+						"endorser": "6000",
+						"eventHub": "6000",
+						"eventReg": "6000"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"{ORG_1_C}MSP": {
+			"mspid": "{ORG_1_C}MSP",
+			"fullpath": true,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users/Admin@{ORG_1}.{DOMAIN_NAME}/msp/keystore/{ORG1-MSP-KEY}"
+			},
+			"peers": ["{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users/Admin@{ORG_1}.{DOMAIN_NAME}/msp/signcerts/Admin@{ORG_1}.{DOMAIN_NAME}-cert.pem"
+			},
+			"certificateAuthorities": ["{CA_ORG1}.{DOMAIN_NAME}"],
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/ca/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/ca.crt"
+			},
+			"url": "grpcs://{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051",
+			"eventUrl": "grpcs://{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}"
+			}
+		}
+	}
+}

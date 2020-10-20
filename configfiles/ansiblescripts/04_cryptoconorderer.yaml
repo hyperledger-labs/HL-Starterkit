@@ -1,0 +1,45 @@
+---
+  - hosts: localhost
+    ignore_errors: true
+
+  - name: Adding Hostname for RAFT Configurations in crypto-config.yaml file
+    hosts: localhost
+    vars:
+    
+      find_this: "- Hostname: {ORD_NAME0}"
+      nested_list:
+        - - "      - Hostname: {ORD_NAME4}"
+          - "      - Hostname: {ORD_NAME3}"
+          - "      - Hostname: {ORD_NAME2}"
+          - "      - Hostname: {ORD_NAME1}"
+      insert_this: "      - Hostname: {ORD_NAME0}"
+      filename: "./crypto-config.org.yaml"
+
+    tasks:
+       - name: Ansible copy file from source crypto-config file
+         copy:
+          src: ./crypto-config.orgsrc.yaml
+          dest: ./crypto-config.org.yaml
+       - name: filtering for ORDERER
+         shell:  cat ../../.hlc.env | grep ORD_NAME4
+         register: ordercheck
+         ignore_errors: true
+
+       - name: Add Orderer names to Crypto-config file
+         lineinfile:
+           dest: ./crypto-config.org.yaml
+           insertafter: "{{ find_this }}"
+           firstmatch: yes
+           line: "{{ item }}"
+         with_items: "{{ nested_list }}"
+         when: ordercheck.stdout is search('ORD_NAME4') #!= -1
+             
+       #- name: Adding the Orgs to Docker compose files peer1
+       #  lineinfile:
+       #     dest: ./crypto-config.org.yaml
+       #     insertafter: "{{ find_this }}"
+       #     firstmatch: yes
+       #     line: "{{ insert_this }}"
+       #  when: ordercheck.stdout is search('ORD_NAME5') #!= -1
+
+
