@@ -9,10 +9,10 @@
 /config
 .DS_Store
 .project
-./channel-artifacts
-./crypto-config
-./explorer/examples/net1/crypto
-./scripts
+channel-artifacts
+crypto-config
+explorer/examples/net1/crypto
+scripts
 ./org1
 ./org2
 *tar.gz
