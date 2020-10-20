@@ -9,12 +9,12 @@
 /config
 .DS_Store
 .project
-/channel-artifacts
-/crypto-config
-/explorer/examples/net1/crypto
-/scripts
-org1
-org2
+./channel-artifacts
+./crypto-config
+./explorer/examples/net1/crypto
+./scripts
+./org1
+./org2
 *tar.gz
 swarm.env
 swarm1.env
@@ -26,6 +26,6 @@ t.sh
 test.sh
 newscript.sh
 StartCustomHLF_001.sh
-configfiles1.2/
-base/
+./configfiles1.2/
+./base/
 

@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+  ca-base:
+    image: hyperledger/fabric-ca:$CAIMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME={CA_ORG1}.{DOMAIN_NAME}
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY}
+
+      #- FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem
+      #- FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c547457fd5fa62952310b2a71ee87ad599ed7a82dc550082dc471cd45372e640_sk
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/tlsca/tlsca.{ORG_1}.{DOMAIN_NAME}-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/tlsca/{ORG1-TLSCA-KEY}
+      - FABRIC_CA_SERVER_PORT=7054
+    ports:
+      - "7054:7054"
+    volumes:
+      - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/tlsca/:/etc/hyperledger/fabric-ca-server-config/tlsca
+      - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/fabric-ca-server-config/msp
+      - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users/:/etc/hyperledger/fabric-ca-server-config/users
+      - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/tlsca/{ORG1-TLSCA-KEY}:/etc/hyperledger/fabric-ca-server/msp/keystore/key.pem
+#    command: > 
+#      sh -c "cp /etc/hyperledger/fabric-ca-server-config/*_sk /etc/hyperledger/fabric-ca-server/msp/keystore/key.pem &&
+#             sleep 5 &&
+#             ls /etc/hyperledger/fabric-ca-server/msp/keystore/ &&
+#             sleep 10 &&
+#             fabric-ca-server start -b admin:adminpw -d"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    #command: sh -c 'fabric-ca-server start --ca.name ca.{DOMAIN_NAME} --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY} -b admin:adminpw -d'
+    #command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY} -b admin:adminpw -d'  
+
+
