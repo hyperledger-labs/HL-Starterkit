@@ -21,14 +21,14 @@ os.environ.update(vars_dict)
 
 subject = "Mail generated through fabric configrator tool"
 body = "Attached Configuration files in tar.gz format ="
-sender_email = "ravi@ksmail.tech"
+sender_email = "demo@ksmail.tech"
 receiver_email = os.environ.get("TOEMLADDRESS")
 
 
 port = 465  # For starttls
 smtp_server = "mail.ksmail.tech"
-#sender_pass = 'ssss'
-sender_pass = input("Input (Sender) password to authenticate sending mails:")
+sender_pass = '@dW!d3st28'
+#sender_pass = input("Input (Sender) password to authenticate sending mails:")
 
 
 # Create a multipart message and set headers

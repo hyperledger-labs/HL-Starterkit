@@ -2,8 +2,10 @@
 
 cp .hlc.env scripts/.hlc.env
 
+echo "Generating the Configurations Files..."
+
 function chlcreate() {
-    echo -e $GRCOLOR"Genesis Block Collection "$NONE
+    #echo -e $GRCOLOR"Genesis Block Collection "$NONE
     sleep 1
     source .hlc.env
     
@@ -130,7 +132,7 @@ function peernetconnect() {
     
     if [ "$IMAGE_TAG" != "2.2.0" ];
     then 
-        docker tag hyperledger/fabric-ccenv:1.4.3 hyperledger/fabric-ccenv:latest   #Bug Fix
+        #docker tag hyperledger/fabric-ccenv:1.4.3 hyperledger/fabric-ccenv:latest   #Bug Fix
         sed -i -e "s/{ORG_1}/$ORG_1/g" ./scripts/10_ccinstantiate.org2.sh
         sed -i -e "s/{ORG_2}/$ORG_2/g" ./scripts/10_ccinstantiate.org2.sh
         sed -i -e "s/{ORG_1_C}/$ORG_1_C/g" ./scripts/10_ccinstantiate.org2.sh
@@ -181,7 +183,7 @@ function peernetconnect() {
         # docker exec $CLI_NAME bash ./scripts/13_ccquery.org2.sh ### Rem for public access
     else 
         echo "...skiping to fab 2.0"
-        docker tag hyperledger/fabric-ccenv:2.2 hyperledger/fabric-ccenv:latest    ## Bug fix in 2.2
+        #docker tag hyperledger/fabric-ccenv:2.2 hyperledger/fabric-ccenv:latest    ## Bug fix in 2.2
         sed -i -e "s/{ORD_NAME0}/$ORD_NAME0/g" ./scripts/9a_lcccapprovefab2.0.sh
         sed -i -e "s/{DOMAIN_NAME}/$DOMAIN_NAME/g" ./scripts/9a_lcccapprovefab2.0.sh
         sed -i -e "s/{CHANNEL_NAME1}/$CHANNEL_NAME1/g" ./scripts/9a_lcccapprovefab2.0.sh

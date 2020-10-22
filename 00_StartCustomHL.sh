@@ -698,6 +698,8 @@ selcontainer
 source 04_Fabsamplecc.sh
 selcc
 
+echo "Generating the configuration files..."
+
 
 #Send config as attachment over email.
 AskconfEmail

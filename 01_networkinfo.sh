@@ -85,13 +85,13 @@ function DSwarmstart () {
                         . 02_swarmstart.sh
                         swarmCopyFiles
                         swarmchconfig
-                        swarmreplKeys
+                        #swarmreplKeys ### REM for public access
                         swarmHost
                         swarmhostupdte
-                        #dswarmInit
-                        swarmscp
+                        #dswarmInit  
+                        #swarmscp ### REM for public access
                         
-                        swarmDeploy
+                        #swarmDeploy ### REM for public access
                         . 03_HLFpeernetconnect.sh
                         chlcreate
                         peernetconnect
@@ -124,9 +124,10 @@ function selcontainer() {
                     Docker-Swarm)
                         echo "Go to Docker-Swarm"
                         echo " Note : Currently Docker Swarm supports Solo order setup with fabric 1.4"
-                        echo "CONT=SWARM" >> .hlc.env
-                        #DSwarmstart
-                        exit 1
+                        echo " under development for public access"
+                        echo "CONT=DSWARM" >> .hlc.env
+                        DSwarmstart
+                        #exit 1 2 3
                         break
                     ;;
                     Kubernatees)
@@ -336,7 +337,7 @@ function AskconfEmail () {
             echo $TOEMLADDRESS
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
-            if [ $ORDCOUNT -eq 0 -a $CONT==SWARM ]; then 
+            if [ $ORDCOUNT -eq 0 -a $CONT==DSWARM ]; then 
                 tar -czf $DOMAIN_NAME.tar.gz crypto-config base scripts swarm configtx.yaml crypto-config.yaml docker-compose-cli.yaml
                 cp $DOMAIN_NAME.tar.gz /tmp/
                 cp configfiles/emailsend.py emailsend.py
@@ -344,13 +345,14 @@ function AskconfEmail () {
                 tar -czf $DOMAIN_NAME.tar.gz  crypto-config base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
                 cp $DOMAIN_NAME.tar.gz /tmp/
                 cp configfiles/emailsend.py emailsend.py
-            elif [ $ORDCOUNT -eq 0 -a $CONT==SINGLE  ];
+            elif [ $ORDCOUNT -eq 0 -a $CONT==SINGLE  ]; then
                 tar -czf $DOMAIN_NAME.tar.gz crypto-config base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
                 cp $DOMAIN_NAME.tar.gz /tmp/
                 cp configfiles/emailsend.py emailsend.py
             else
                 echo "Error in Configuration execution"
-            python emailsend.py
+            fi
+            python3 emailsend.py
 
             #./scripts/1a_firsttimeonly.sh
         ;;

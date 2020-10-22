@@ -40,11 +40,10 @@ function Fabsinglehost () {
 function fabsinhost() {
     export `cat ./.hlc.env | grep CONT`
     echo "CONT="$CONT
-    #set +x
     if [ "$CONT" == "SINGLE" ]; then
-      Fabsinglehost
-      docker ps -a
-      export CLI_NAME="$(docker ps --format='{{.Names}}' | grep cli)"
+      #Fabsinglehost  ### REM for public test
+      #docker ps -a ### REM for public test
+      #export CLI_NAME="$(docker ps --format='{{.Names}}' | grep cli)" ### REM for public test
       echo "CLI_NAME=$CLI_NAME" >> .hlc.env
       . 03_HLFpeernetconnect.sh
       chlcreate

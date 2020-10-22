@@ -74,11 +74,7 @@ function selcc() {
                     ;;
                 esac
             done            
-            #read -p "Input your choice for Dockerswarm/K8s   (ex: "DOCKERSWARM" or "K8S") :" NETWORK_NAME
-            #if [ -z $NETWORK_NAME ];then echo  "Taking default"; NETWORK_NAME="DOCKERSWARM"; else NETWORK_NAME="$NETWORK_NAME"; fi;
-            #echo $NETWORK_NAME
 
-            #./scripts/1a_firsttimeonly.sh
         ;;
         [nN] | [n|N][O|o] )
         echo ".....Skipping to docker custom files."
