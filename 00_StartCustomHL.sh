@@ -650,13 +650,12 @@ function createChannelArtifacts() {
             sed -i -e "s/{ORDCAP1}/$ORDCAP1/g" configtx.yaml
             sed -i -e "s/{APPCAP1}/$APPCAP1/g" configtx.yaml
 
-            echo running ./scripts/1a_firsttimeonly.sh
-            #cp ./configfiles/scripts/1a_firsttimeonly.sh ./scripts/1a_firsttimeonly.sh
+            #echo running ./scripts/1a_firsttimeonly.sh ### REM for public access
             sed -i -e "s/{ORG_1_C}/$ORG_1_C/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{ORG_2_C}/$ORG_2_C/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{SYS_CHANNEL}/$SYS_CHANNEL/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{CHANNEL_NAME1}/$CHANNEL_NAME1/g" ./scripts/1a_firsttimeonly.sh
-            ./scripts/1a_firsttimeonly.sh
+            # ./scripts/1a_firsttimeonly.sh ##Rem for public test
         ;;
         [nN] | [n|N][O|o] )
         ;;
@@ -665,7 +664,7 @@ function createChannelArtifacts() {
         ;;
     esac
 }
-createChannelArtifacts
+createChannelArtifacts 
 
 
 ###################################
@@ -688,7 +687,7 @@ function replKeys () {
 
 
 }
-replKeys
+#replKeys ### Rem for public access
 
 
 
@@ -698,6 +697,8 @@ selcontainer
 
 source 04_Fabsamplecc.sh
 selcc
+
+echo "Generating the configuration files..."
 
 
 #Send config as attachment over email.
@@ -718,8 +719,8 @@ AskconfEmail
 #docker exec Org3cli sh ./scripts/17_addorg_ccins_qry.sh
 #echo " #####  Tested the first network -explained  #### "
 #./expstart.sh
-
-echo -e $BCOLOR"Would you like to Hyperledger Explorer  ? [y,n]"$NONE
+function explorStart() {
+    echo -e $BCOLOR"Would you like to Hyperledger Explorer  ? [y,n]"$NONE
     read yn
     case $yn in
         [[yY] | [yY][Ee][Ss] )
@@ -733,3 +734,9 @@ echo -e $BCOLOR"Would you like to Hyperledger Explorer  ? [y,n]"$NONE
         exit 1
         ;;
     esac
+
+
+}
+# explorStart ## REM for public test
+
+exit 123

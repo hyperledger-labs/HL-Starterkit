@@ -79,6 +79,23 @@ function selBCNet() {
 
 }
 
+## Just for below Swarm selection start
+function DSwarmstart () {
+
+                        . 02_swarmstart.sh
+                        swarmCopyFiles
+                        swarmchconfig
+                        #swarmreplKeys ### REM for public access
+                        swarmHost
+                        swarmhostupdte
+                        #dswarmInit  
+                        #swarmscp ### REM for public access
+                        
+                        #swarmDeploy ### REM for public access
+                        . 03_HLFpeernetconnect.sh
+                        chlcreate
+                        peernetconnect
+}
 
 function selcontainer() {
     echo
@@ -107,20 +124,10 @@ function selcontainer() {
                     Docker-Swarm)
                         echo "Go to Docker-Swarm"
                         echo " Note : Currently Docker Swarm supports Solo order setup with fabric 1.4"
-                        . 02_swarmstart.sh
-                        swarmCopyFiles
-                        swarmchconfig
-                        swarmreplKeys
-                        swarmHost
-                        swarmhostupdte
-                        #dswarmInit
-                        swarmscp
-                        
-                        swarmDeploy
-                        . 03_HLFpeernetconnect.sh
-                        chlcreate
-                        peernetconnect
-                        exit 1
+                        echo " under development for public access"
+                        echo "CONT=DSWARM" >> .hlc.env
+                        DSwarmstart
+                        #exit 1 2 3
                         break
                     ;;
                     Kubernatees)
@@ -330,11 +337,22 @@ function AskconfEmail () {
             echo $TOEMLADDRESS
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
-            tar -czf $DOMAIN_NAME.tar.gz channel-artifacts crypto-config base configtx.yaml crypto-config.yaml docker-compose-cli.yaml
-            cp $DOMAIN_NAME.tar.gz /tmp/
-            cp configfiles/emailsend.py emailsend.py
-
-            python emailsend.py
+            if [ $ORDCOUNT -eq 0 -a $CONT==DSWARM ]; then 
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
+                cp $DOMAIN_NAME.tar.gz /tmp/
+                cp configfiles/emailsend.py emailsend.py
+            elif [ $ORDCOUNT -eq 4 ]; then 
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
+                cp $DOMAIN_NAME.tar.gz /tmp/
+                cp configfiles/emailsend.py emailsend.py
+            elif [ $ORDCOUNT -eq 0 -a $CONT==SINGLE  ]; then
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
+                cp $DOMAIN_NAME.tar.gz /tmp/
+                cp configfiles/emailsend.py emailsend.py
+            else
+                echo "Error in Configuration execution"
+            fi
+            python3 emailsend.py
 
             #./scripts/1a_firsttimeonly.sh
         ;;
