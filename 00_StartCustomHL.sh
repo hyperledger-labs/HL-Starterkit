@@ -738,3 +738,5 @@ function explorStart() {
 
 }
 # explorStart ## REM for public test
+
+exit 1 2 3

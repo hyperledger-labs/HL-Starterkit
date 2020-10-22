@@ -338,15 +338,15 @@ function AskconfEmail () {
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
             if [ $ORDCOUNT -eq 0 -a $CONT==DSWARM ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz crypto-config base scripts swarm configtx.yaml crypto-config.yaml docker-compose-cli.yaml
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
                 cp $DOMAIN_NAME.tar.gz /tmp/
                 cp configfiles/emailsend.py emailsend.py
             elif [ $ORDCOUNT -eq 4 ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz  crypto-config base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
                 cp $DOMAIN_NAME.tar.gz /tmp/
                 cp configfiles/emailsend.py emailsend.py
             elif [ $ORDCOUNT -eq 0 -a $CONT==SINGLE  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz crypto-config base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
                 cp $DOMAIN_NAME.tar.gz /tmp/
                 cp configfiles/emailsend.py emailsend.py
             else
