@@ -130,7 +130,7 @@ function peernetconnect() {
     #docker exec $CLI_NAME bash ./scripts/9_ccinstallpeer0.org2.sh ### Rem for public access
     #sleep 2
     
-    if [ "$IMAGE_TAG" != "2.2.0" ];
+    if [[ $IMAGE_TAG !=  @(2.0.0|2.1.0|2.2.0) ]];
     then 
         #docker tag hyperledger/fabric-ccenv:1.4.3 hyperledger/fabric-ccenv:latest   #Bug Fix
         sed -i -e "s/{ORG_1}/$ORG_1/g" ./scripts/10_ccinstantiate.org2.sh
@@ -214,7 +214,6 @@ function peernetconnect() {
 
 function org3sedscrpt() {
     source .hlc.env
-
    
     sed -i -e "s/{ORG_1}/$ORG_1/g" ./scripts/14A_peer0.org3_chljoin.sh
     sed -i -e "s/{ORG_3}/$ORG_3/g" ./scripts/14A_peer0.org3_chljoin.sh
@@ -227,10 +226,6 @@ function org3sedscrpt() {
     sed -i -e "s/{ORD_NAME0}/$ORD_NAME0/g" ./scripts/14A_peer0.org3_chljoin.sh
     # docker exec $CLI_NAME bash ./scripts/14A_peer0.org3_chljoin.sh ### Rem for public access
     #sleep 2
-
-
-        
-    
 
     sed -i -e "s/{ORG_1}/$ORG_1/g" ./scripts/14B_anchorpeerorg3.sh 
     sed -i -e "s/{ORG_3}/$ORG_3/g" ./scripts/14B_anchorpeerorg3.sh 
@@ -265,5 +260,5 @@ function org3sedscrpt() {
     sed -i -e "s/{PEER_NAME1}/$PEER_NAME1/g" ./scripts/14D_ccquery.org3.sh
     sed -i -e "s/{CHANNEL_NAME1}/$CHANNEL_NAME1/g" ./scripts/14D_ccquery.org3.sh
     sed -i -e "s/{CLI_NAME}/$CLI_NAME/g" ./scripts/14D_ccquery.org3.sh
-    docker exec $CLI_NAME bash ./scripts/14D_ccquery.org3.sh
+   # docker exec $CLI_NAME bash ./scripts/14D_ccquery.org3.sh
 }

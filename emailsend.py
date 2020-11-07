@@ -21,14 +21,14 @@ os.environ.update(vars_dict)
 
 subject = "Mail generated through fabric configrator tool"
 body = "Attached Configuration files in tar.gz format ="
-sender_email = "ravi@ksmail.tech"
+sender_email = "postmaster@blog.knowledgesociety.tech"
 receiver_email = os.environ.get("TOEMLADDRESS")
 
 
 port = 465  # For starttls
-smtp_server = "mail.ksmail.tech"
-#sender_pass = 'ssss'
-sender_pass = input("Input (Sender) password to authenticate sending mails:")
+smtp_server = "smtp.eu.mailgun.org"
+sender_pass = 'eae68b91cd2c7ed7e7217d75d6ed2a61-ea44b6dc-2dc6d04f'
+#sender_pass = input("Input (Sender) password to authenticate sending mails:")
 
 
 # Create a multipart message and set headers
@@ -43,6 +43,7 @@ text = """\
 Hi,
 Attached the Configuration files that generated for your Hyperledger fabric 
 
+Note : Since file is encrypted, rename to {somename}.tar.gz
 Thanks
 Support Team
 KSTECH
@@ -53,7 +54,7 @@ html = """\
     <p>Hi,<br>
        Attached the Configuration files that generated for your Hyperledger fabric<br>
 
-
+Note : Since file is encrypted, rename to {somename}.tar.gz
 Thanks
 Support Team
 KSTECH
@@ -75,7 +76,7 @@ attach_file_name = os.path.join( path1, filen + "." + filext)
 with open(attach_file_name, "rb") as attachment:
     # Add file as application/octet-stream
     # Email client can usually download this automatically as attachment
-    part = MIMEBase("application", "octet-stream")
+    part = MIMEBase("application", "x-gzip")
     part.set_payload(attachment.read())
 
 # Encode file in ASCII characters to send by email    
