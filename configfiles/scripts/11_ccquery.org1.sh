@@ -12,7 +12,7 @@ export CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
 ##===================== Querying on peer0.org1 on channel 'mychannel2'... =====================
 #echo "Attempting to Query {PEER_NAME0}.{ORG_1} ...3 secs"
 sleep 5
-if [ "$IMAGE_TAG" == "2.2.0"  ]; 
+if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
 then 
 peer chaincode query -C {CHANNEL_NAME1} -n sacc -c '{"Args":["get","name"]}'
 else

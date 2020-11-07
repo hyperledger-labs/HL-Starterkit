@@ -20,6 +20,7 @@
          copy:
           src: ./crypto-config.orgsrc.yaml
           dest: ./crypto-config.org.yaml
+
        - name: filtering for ORDERER
          shell:  cat ../../.hlc.env | grep ORD_NAME4
          register: ordercheck

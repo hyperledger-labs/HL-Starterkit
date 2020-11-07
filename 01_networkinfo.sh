@@ -164,7 +164,7 @@ function HLFver() {
     echo ""
     echo -e $BCOLOR"Select your Hyperledger Fabric Version..?"$NONE
     PS3="Enter your choice (must be a above number): "
-    select HLFVER in 1.4.3 1.4.4 1.4.5 1.4.6 2.0 2.2 exit
+    select HLFVER in 1.4.3 1.4.4 1.4.5 1.4.6 2.0.0 2.1.0 2.2.0 exit
     do
         case $HLFVER in
             1.4.3|1.4.4|1.4.5|1.4.6)  
@@ -185,7 +185,7 @@ function HLFver() {
 
                 break
             ;;
-            2.0|2.2)
+            2.0.0|2.1.0|2.2.0)
                 echo -e $GRCOLOR"Go to 2.x"$NONE
                 export IMAGE_TAG=2.2.0
                 export CAIMAGE_TAG=1.4.7
@@ -337,18 +337,18 @@ function AskconfEmail () {
             echo $TOEMLADDRESS
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
-            if [ $ORDCOUNT -eq 0 -a $CONT==DSWARM ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
-                cp $DOMAIN_NAME.tar.gz /tmp/
-                cp configfiles/emailsend.py emailsend.py
+            if [ $ORDCOUNT -eq 0 -a $CONT==SINGLE ]; then 
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
+                yes | cp $DOMAIN_NAME.tar.gz /tmp/
+                yes | cp configfiles/emailsend.py emailsend.py
             elif [ $ORDCOUNT -eq 4 ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
-                cp $DOMAIN_NAME.tar.gz /tmp/
-                cp configfiles/emailsend.py emailsend.py
-            elif [ $ORDCOUNT -eq 0 -a $CONT==SINGLE  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
-                cp $DOMAIN_NAME.tar.gz /tmp/
-                cp configfiles/emailsend.py emailsend.py
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
+                yes | cp $DOMAIN_NAME.tar.gz /tmp/
+                yes | cp configfiles/emailsend.py emailsend.py
+            elif [ $ORDCOUNT -eq 0 -a $CONT==DSWARM  ]; then
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
+                yes | cp $DOMAIN_NAME.tar.gz /tmp/
+                yes | cp configfiles/emailsend.py emailsend.py
             else
                 echo "Error in Configuration execution"
             fi

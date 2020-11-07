@@ -14,14 +14,14 @@ set -o ignoreeof
 source .env
 
 
-docker-compose -f docker-compose-cli.yaml down -v
-docker-compose -f explorer/docker-compose-explorer.yml down -v
-docker stop $(docker ps -qa)
-docker rm $(docker ps -qa)
-docker image rm $(docker image ls | grep -E 'mycc|dev' | awk '{print $3}')
-
-docker volume prune -f
-docker network prune -f
+#docker-compose -f docker-compose-cli.yaml down -v
+#docker-compose -f explorer/docker-compose-explorer.yml down -v
+#docker stop $(docker ps -qa)
+#docker rm $(docker ps -qa)
+#docker image rm $(docker image ls | grep -E 'mycc|dev' | awk '{print $3}')
+#
+#docker volume prune -f
+#docker network prune -f
 clear  #Need to remove on final stage
 
 
@@ -337,7 +337,7 @@ function checkORG3() {
     export `cat .hlc.env | grep ORGCNT`
     #!/bin/bash -vx
     export `cat .hlc.env | grep IMAGE_TAG`
-    if  [ $ORGCNT -ge 3  -a  $IMAGE_TAG == 2.2.0 ]  ;
+    if  [[ $ORGCNT -ge 3 && $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]] ;
     then
         echo "...Adding orgs in config"
         echo " org > 3 & fabric 2.2  "
@@ -348,7 +348,7 @@ function checkORG3() {
         
         ansible-playbook 05_configtx_fab2.0.yaml
         ansible-playbook 06_configtx_fab2.0-orgadd.yaml
-        if [ $ORDCOUNT -gt 0  -a  "$IMAGE_TAG" == 2.2.0 ];
+        if [[ $ORDCOUNT -gt 0 && $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]];
         then
         ansible-playbook 04_cryptoconorderer.yaml
         else " Solo config @2x"
@@ -360,25 +360,25 @@ function checkORG3() {
         cp ./configfiles/base/peer-base-org.yaml ./base/peer-base.yaml
         cp ./configfiles/base/ca-base-org.yaml ./base/ca-base.yaml
         cp ./configfiles/docker-compose-cli-org.yaml ./docker-compose-cli.yaml
-    elif   [ $ORGCNT -lt 3  -a  "$IMAGE_TAG" == 2.2.0 ] ;
+    elif   [[ $ORGCNT -lt 3  && $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]] ;
     then
         echo " fabric 2.2.0 & < 3org "
         cd configfiles/ansiblescripts/
         #ansible-playbook 04_cryptoconorderer.yaml
         ansible-playbook 05_configtx_fab2.0.yaml
 
-        if [ $ORDCOUNT -gt 0  -a  "$IMAGE_TAG" == 2.2.0 ]; then
+        if [[ $ORDCOUNT -gt 0  && $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; then
         ansible-playbook 04_cryptoconorderer.yaml
-        else " Solo config @2x"
+        else echo "Solo config @2x"
+        cp ./crypto-config.orgsrc.yaml ../../crypto-config.yaml
         fi
         cd ../../ 
         cp ./configfiles/ansiblescripts/configtx_v20.org.yaml ./configtx.yaml
-        cp ./configfiles/ansiblescripts/crypto-config.org.yaml ./crypto-config.yaml
         cp ./configfiles/base/docker-compose-base-orgsrc.yaml ./base/docker-compose-base.yaml
         cp ./configfiles/base/peer-base-orgsrc.yaml ./base/peer-base.yaml
         cp ./configfiles/base/ca-base-orgsrc.yaml ./base/ca-base.yaml
         cp ./configfiles/docker-compose-cli-orgsrc.yaml ./docker-compose-cli.yaml
-    elif  [ $ORGCNT -ge 3 -a  "$IMAGE_TAG" == 1.4.3 ]  ;
+    elif  [[ $ORGCNT -ge 3 && $IMAGE_TAG == @(1.4.3|1.4.4|1.4.5|1.4.6) ]]; 
     then
         echo " fabric 1.4.3 &> 3org "
         # for fabric 1.4x
@@ -389,7 +389,7 @@ function checkORG3() {
         source ../../.hlc.env
         #set -o allexport
         ansible-playbook 01_configtxchg.yaml
-        if [ $ORDCOUNT -gt 0  -a  "$IMAGE_TAG" == 1.4.3 ] ;
+        if [[ $ORDCOUNT -gt 0  && $IMAGE_TAG == @(1.4.3|1.4.4|1.4.5|1.4.6) ]] ;
         then
         ansible-playbook 04_cryptoconorderer.yaml
         else " Solo config @1.4x"
@@ -635,6 +635,27 @@ mkdir channel-artifacts
 cp -r ./configfiles/scripts/. ./scripts
 cp .c.env ./scripts/
 
+if [[ $IMAGE_TAG == @(1.4.3|1.4.4|1.4.5|1.4.6) ]];  then
+rm ./scripts/8a_lccpackageinstall2.0.sh
+rm ./scripts/9a_lcccapprovefab2.0.sh
+rm ./scripts/10a_lccc-commitfab2.0.sh
+rm ./scripts/11a_fab2.0_localrun.sh
+rm ./scripts/14A_peer0.org3_chljoin.sh 
+rm ./scripts/14B_anchorpeerorg3.sh 
+rm ./scripts/14C_ccinstallpeer0.org3.sh 
+rm ./scripts/14D_ccquery.org3.sh
+else [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
+rm ./scripts/10_ccinstantiate.org2.sh
+rm ./scripts/11_ccquery.org1.sh
+rm ./scripts/12_ccinvoketransfer.sh
+rm ./scripts/13_ccquery.org2.sh
+rm ./scripts/14_prereq_addorg.sh
+rm ./scripts/15_addorg_netup.sh
+rm ./scripts/16_addorg_joinnet.sh
+rm ./scripts/17_addorg_ccins_qry.sh
+fi
+
+
 #export ORD_TYPE="SOLO"
 selconsensus
 ordraft
@@ -702,6 +723,7 @@ echo "Generating the configuration files..."
 
 
 #Send config as attachment over email.
+source 01_networkinfo.sh
 AskconfEmail
 
 

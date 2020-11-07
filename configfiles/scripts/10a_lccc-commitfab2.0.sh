@@ -13,7 +13,7 @@ export CORE_PEER_ID={CLI_NAME}
 export CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
 export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp/tlscacerts/tlsca.{DOMAIN_NAME}-cert.pem
 
-if [ "$IMAGE_TAG" == "2.2.0" ]; 
+if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
 then 
 #PEER_CONN_PARMS="$PEER_CONN_PARMS --peerAddresses $CORE_PEER_ADDRESS"
 ## Set path to TLS certificate

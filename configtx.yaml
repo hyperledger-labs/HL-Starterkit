@@ -46,6 +46,9 @@ Organizations:
                 Rule: "OR('Orderer0MSP.admin')"
 
 
+        OrdererEndpoints:
+            - orderer0.example.com:7050
+  
     - &Org1
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -72,6 +75,12 @@ Organizations:
                 Type: Signature
                 Rule: "OR('Org1MSP.admin')"
 
+#<!-- BEGIN 4ANSIBLE MANAGED BLOCK4 for Org1 -->
+# Endorsement
+            Endorsement:
+                Type: Signature
+                Rule: "OR('Org1MSP.peer')"
+#<!-- END 4ANSIBLE MANAGED BLOCK4 for Org1 -->
         # leave this flag set to true.
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
@@ -106,6 +115,12 @@ Organizations:
                 Type: Signature
                 Rule: "OR('Org2MSP.admin')"
 
+#<!-- BEGIN 2ANSIBLE MANAGED BLOCK2 for Org2 -->
+# Endorsement
+            Endorsement:
+                Type: Signature
+                Rule: "OR('Org2MSP.peer')"
+#<!-- END 2ANSIBLE MANAGED BLOCK2 for Org2 -->
         # Insert here for ORG2 endorsement
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
@@ -149,7 +164,7 @@ Capabilities:
         # prior releases.
         # Prior to enabling V1.4.3 channel capabilities, ensure that all
         # orderers and peers on a channel are at v1.4.3 or later.
-        V{CHLCAP1}
+        V2_0: true
         # V1.3 for Channel enables the new non-backwards compatible
         # features and fixes of fabric v1.3
         #V{CHLCAP2}21_3: false
@@ -166,7 +181,7 @@ Capabilities:
         # level, but which would be incompatible with orderers from prior releases.
         # Prior to enabling V1.4.2 orderer capabilities, ensure that all
         # orderers on a channel are at v1.4.2 or later.
-        V{ORDCAP1}
+        V2_0: true
         # V1.1 for Orderer enables the new non-backwards compatible
         # features and fixes of fabric v1.1
         #V{ORDCAP2}1_1: false
@@ -177,7 +192,7 @@ Capabilities:
     Application: &ApplicationCapabilities
         # V1.4.2 for Application enables the new non-backwards compatible
         # features and fixes of fabric v1.4.2.
-        V{APPCAP1}
+        V2_0: true
         # V1.3 for Application enables the new non-backwards compatible
         # features and fixes of fabric v1.3.
         #V1_3: false
@@ -216,6 +231,15 @@ Application: &ApplicationDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+#<!-- BEGIN 4ANSIBLE MANAGED BLOCK4 for App Capabilites -->
+# Endorsement
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+#<!-- END 4ANSIBLE MANAGED BLOCK4 for App Capabilites -->
  #Here insert for Application Capabilites insert before
     Capabilities:
         <<: *ApplicationCapabilities
@@ -232,7 +256,7 @@ Orderer: &OrdererDefaults
 
     # Orderer Type: The orderer implementation to start
     # Available types are "solo" and "kafka"  and "etcdraft"
-    OrdererType: {ORDTYP}
+    OrdererType: solo
 
     Addresses:
         - orderer0.example.com:7050

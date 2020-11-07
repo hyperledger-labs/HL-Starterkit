@@ -12,7 +12,7 @@ export CORE_PEER_ID={CLI_NAME}
 export CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051
 export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp/tlscacerts/tlsca.{DOMAIN_NAME}-cert.pem
 
-if [ "$IMAGE_TAG" == "2.2.0"  ]; 
+if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
 then 
 peer chaincode instantiate -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n sacc -v 1.0 -l golang -c '{"Args":["name","ravi"]}' -P "AND ('{ORG_1_C}MSP.peer','{ORG_2_C}MSP.peer')"
 else
