@@ -6,7 +6,7 @@ ln -s /etc/hyperledger/fabric config
 cd peer
 export PATH=${PWD}/../bin:$PATH
 
-export FABRIC_CFG_PATH=$PWD/../config/
+export HL_CFG_PATH=$PWD/../config/
 cp /tmp/orderer /usr/local/bin/
 
 

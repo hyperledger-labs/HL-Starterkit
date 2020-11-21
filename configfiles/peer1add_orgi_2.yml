@@ -6,4 +6,4 @@
       depends_on:
         - couchdb3
       networks:
-        - byfn
+        - hlfnet

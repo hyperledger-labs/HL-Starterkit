@@ -21,15 +21,32 @@ os.environ.update(vars_dict)
 
 subject = "Mail generated through fabric configrator tool"
 body = "Attached Configuration files in tar.gz format ="
-sender_email = "postmaster@blog.knowledgesociety.tech"
 receiver_email = os.environ.get("TOEMLADDRESS")
 
+### gmail
+#sender_email = 'kstechio2019@gmail.com'
+#smtp_server = "smtp.gmail.com"
+#sender_pass = 'kstech@369'
 
-port = 465  # For starttls
-smtp_server = "smtp.eu.mailgun.org"
-sender_pass = 'eae68b91cd2c7ed7e7217d75d6ed2a61-ea44b6dc-2dc6d04f'
+### hostinger email
+#sender_email = 'support@blog.knowledgesociety.tech'
+#smtp_server = 'smtp.hostinger.in'
+#sender_pass = '6k:yid6xe8P#'
+
+
+
+### mailgun
+#sender_email = "postmaster@blog.knowledgesociety.tech"
+#smtp_server = "smtp.eu.mailgun.org"
+#sender_pass = 'eae68b91cd2c7ed7e7217d75d6ed2a61-ea44b6dc-2dc6d04f'
 #sender_pass = input("Input (Sender) password to authenticate sending mails:")
 
+### ksmail
+sender_email = 'support@ksmail.tech'
+smtp_server = 'mail.ksmail.tech'
+sender_pass = 'support123'
+
+port = 587 # For starttls
 
 # Create a multipart message and set headers
 message = MIMEMultipart()
@@ -43,7 +60,8 @@ text = """\
 Hi,
 Attached the Configuration files that generated for your Hyperledger fabric 
 
-Note : Since file is encrypted, rename to {somename}.tar.gz
+Note : If you received as unname attachment, pls rename to {somename}.tar.gz
+
 Thanks
 Support Team
 KSTECH
@@ -54,7 +72,8 @@ html = """\
     <p>Hi,<br>
        Attached the Configuration files that generated for your Hyperledger fabric<br>
 
-Note : Since file is encrypted, rename to {somename}.tar.gz
+Note : If you received as unname attachment, pls rename to {somename}.tar.gz
+
 Thanks
 Support Team
 KSTECH
@@ -69,11 +88,12 @@ message.attach(MIMEText(text, "plain"))
 #message.attach(MIMEText(html, "html")
 filen = os.environ.get("DOMAIN_NAME").replace('\n','')
 path1= '/tmp/'
-filext = 'tar.gz'
-attach_file_name = os.path.join( path1, filen + "." + filext)  
+filext = '.tar.gz'
+file_name = os.path.join( path1, filen + filext)  
+attach_file_name = os.path.join(filen)  
 #print (attach_file_name)
 # Open PDF file in binary mode
-with open(attach_file_name, "rb") as attachment:
+with open(file_name, "rb") as attachment:
     # Add file as application/octet-stream
     # Email client can usually download this automatically as attachment
     part = MIMEBase("application", "x-gzip")
@@ -82,7 +102,7 @@ with open(attach_file_name, "rb") as attachment:
 # Encode file in ASCII characters to send by email    
 encoders.encode_base64(part)
 
-part.add_header('Content-Decomposition', 'attachment', filename=attach_file_name)
+part.add_header('Content-Decomposition', "attachment; filename=\"%s.tar.gz\"" % (attach_file_name))
 message.attach(part)
 
 
@@ -109,11 +129,12 @@ text = message.as_string()
 # Log in to server using secure context and send email
 context = ssl.create_default_context()
 try :
-    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+    with smtplib.SMTP(smtp_server, port) as server:
+        server.starttls(context=context)
         server.login(sender_email, sender_pass)
         server.sendmail(sender_email, receiver_email, text)
         print ("Successfully sent email")
         server.quit()
 
-except SMTPException:
-    print ("Error: unable to send email")
+except smtplib.SMTPException as e :
+    print ("Error: unable to send email", e )

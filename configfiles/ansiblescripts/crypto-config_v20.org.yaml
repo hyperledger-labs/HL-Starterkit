@@ -1,0 +1,43 @@
+OrdererOrgs:
+  - Name: {ORD_NAME0_C}
+    Domain: {DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {ORD_NAME0}
+PeerOrgs:
+  - Name: {ORG_1_C}
+    Domain: {ORG_1}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+      - Hostname: {PEER_NAME1}
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+  
+  - Name: {ORG_2_C}
+    Domain: {ORG_2}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+      - Hostname: {PEER_NAME1}
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+# <!-- BEGIN ANSIBLE MANAGED BLOCK by ravinayag -->
+  - Name: {ORG_3_C}
+    Domain: {ORG_3}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+      - Hostname: {PEER_NAME1}
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+# <!-- END ANSIBLE MANAGED BLOCK by ravinayag -->

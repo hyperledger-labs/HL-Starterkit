@@ -15,23 +15,25 @@
 
 
     tasks:
-       - name: Ansible copy file from source crypto-config file
-         copy:
-          src: ./configtx_v14.orgsrc.yaml
-          dest: ./configtx_v20.org.yaml
 
-       - name: filtering for org
-         shell:  cat ../../.hlc.env | grep ORG_3
+       - name: filtering for  imagetag
+         shell:  cat ../../.hlc.env | grep ORG_3 
          register: orgcheck
          ignore_errors: true
-       
+
+      #  - name: Ansible copy file from source configtx file
+      #    copy:
+      #     src: ./configtx_v20.org.yaml
+      #     dest: ./configtx_v20.org.yaml
+      #    when: orgcheck.stdout is search('2.2.0')
+
        #- name: testing
        #  debug: 
        #   msg: "{{ orgcheck }}"
-       - name: Ansible copy file to homepath  - Crypto-config
+       - name: copy file from source  - Crypto-config
          copy:
           src: ./crypto-config.orgsrc.yaml
-          dest: ../../crypto-config.org.yaml 
+          dest: ./crypto-config_v20.org.yaml 
 
        - name: Inserting the ORG 3 configtx
          blockinfile:
@@ -50,7 +52,7 @@
            insertafter: EOF
            #state: present
            block: "{{ lookup('file', './crypto-config-org3.txt') }}"
-           dest: ./crypto-config.org.yaml
+           dest: ./crypto-config_v20.org.yaml
            backup: yes
          when: orgcheck.stdout is search('ORG_3') #!= -1
 
@@ -116,7 +118,7 @@
 
        - name: Add endorser for org3 names to configtx file
          blockinfile:
-           marker: "<!-- {mark} 2ANSIBLE MANAGED BLOCK2 for Org3 -->"
+           marker: "# <!-- {mark} 2ANSIBLE MANAGED BLOCK2 for Org3 -->"
            dest: ./configtx_v20.org.yaml
            insertbefore: "# Insert here for  endorsement ORG_3"
            #when: fabricvercheck.stdout is search('2.2.0') #!= -1
@@ -126,7 +128,8 @@
                                       Type: Signature
                                       Rule: "OR('{ORG_3_C}MSP.peer')"
          when: orgcheck.stdout is search('ORG_3') #!= -1
-        
+
+
       # - name: multiline match and insert
       #   replace: >
       #     dest={{ filename }}

@@ -13,10 +13,16 @@
         filename: "./configtx_v20.org.yaml"
   
       tasks:
-         - name: Ansible copy file from source crypto-config file
+         - name: Ansible copy file from source configtx file
            copy:
             src: ./configtx_v14.orgsrc.yaml
             dest: ./configtx_v20.org.yaml
+
+         - name: Ansible copy file from source docker-compose-cli file
+           copy:
+            src: ../docker-compose-cli-orgsrc.yaml
+            dest: ../docker-compose-cli-org.yaml
+          
 
          - name: filtering for fab2.0 IMAGE_TAG=2.2.0
            shell:  cat ../../.hlc.env | grep IMAGE_TAG 
@@ -82,19 +88,22 @@
            register: ordcountcheck
            ignore_errors: true
 
-         - name: Insering line for addon org for volume file peer0
-           lineinfile:
-             dest: ../docker-compose-cli-org.yaml
-             insertafter: '  {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:'
-             firstmatch: yes
-             #line: "  {ORD_NAME1}.{DOMAIN_NAME}:"
-             line: "{{ item }}"
-           with_items: 
-             - "  {ORD_NAME1}.{DOMAIN_NAME}:"
-             - "  {ORD_NAME2}.{DOMAIN_NAME}:"
-             - "  {ORD_NAME3}.{DOMAIN_NAME}:"
-             - "  {ORD_NAME4}.{DOMAIN_NAME}:"
-           when: ordcountcheck.stdout is search('4')
+        #  - name: Insering line for addon org for volume file peer0
+        #    lineinfile:
+        #      dest: ../docker-compose-cli-org.yaml
+        #      insertafter: '  {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:'
+        #      firstmatch: yes
+        #      #line: "  {ORD_NAME1}.{DOMAIN_NAME}:"
+        #      line: "{{ item }}"
+        #    with_items: 
+        #      - "  {ORD_NAME1}.{DOMAIN_NAME}:"
+        #      - "  {ORD_NAME2}.{DOMAIN_NAME}:"
+        #      - "  {ORD_NAME3}.{DOMAIN_NAME}:"
+        #      - "  {ORD_NAME4}.{DOMAIN_NAME}:"
+        #    when: ordcountcheck.stdout is search('4')
+
+         - include_tasks: 05_dockcomp-cli-ordr.yaml
+           when : ordcountcheck.stdout is search('4')
 
 
 #

@@ -9,7 +9,7 @@ volumes:
 networks:
   {DOMAIN_NAME}:
     external:
-      name: ${COMPOSE_PROJECT_NAME}_byfn
+      name: ${COMPOSE_PROJECT_NAME}_${DOCK_NET}
 
 services:
 

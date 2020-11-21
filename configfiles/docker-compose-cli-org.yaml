@@ -11,53 +11,13 @@ volumes:
   {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:
   {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:
   {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
-  {ORD_NAME4}.{DOMAIN_NAME}:
-  {ORD_NAME3}.{DOMAIN_NAME}:
-  {ORD_NAME2}.{DOMAIN_NAME}:
-  {ORD_NAME1}.{DOMAIN_NAME}:
   {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:
   {PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:
 
 
 
 networks:
-  byfn:
+  hlfnet:
 
 services:
 
@@ -67,7 +27,7 @@ services:
       service: ca-base
     container_name: {CA_ORG1}.{DOMAIN_NAME}
     networks:
-      - byfn
+      - hlfnet
 
   {ORD_NAME0}.{DOMAIN_NAME}:
     extends:
@@ -75,7 +35,7 @@ services:
       service: {ORD_NAME0}.{DOMAIN_NAME}
     container_name: {ORD_NAME0}.{DOMAIN_NAME}
     networks:
-      - byfn
+      - hlfnet
 
   {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:
     container_name: {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
@@ -85,7 +45,7 @@ services:
     depends_on:
       - couchdb0
     networks:
-      - byfn
+      - hlfnet
 
   {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:
     container_name: {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
@@ -95,7 +55,7 @@ services:
     depends_on:
       - couchdb1
     networks:
-      - byfn
+      - hlfnet
 
   {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:
     container_name: {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}
@@ -105,7 +65,7 @@ services:
     depends_on:
       - couchdb2
     networks:
-      - byfn
+      - hlfnet
 
   {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:
     container_name: {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}
@@ -115,7 +75,7 @@ services:
     depends_on:
       - couchdb3
     networks:
-      - byfn
+      - hlfnet
 
   couchdb0:
     container_name: couchdb0
@@ -130,7 +90,7 @@ services:
     ports:
       - "5984:5984"
     networks:
-      - byfn
+      - hlfnet
 
   couchdb1:
     container_name: couchdb1
@@ -145,7 +105,7 @@ services:
     ports:
       - "6984:5984"
     networks:
-      - byfn
+      - hlfnet
 
 
   couchdb2:
@@ -161,7 +121,7 @@ services:
     ports:
       - "7984:5984"
     networks:
-      - byfn
+      - hlfnet
 
   couchdb3:
     container_name: couchdb3
@@ -176,7 +136,7 @@ services:
     ports:
       - "6884:5984"
     networks:
-      - byfn
+      - hlfnet
 
 
   cli:
@@ -213,8 +173,7 @@ services:
       - {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}
       - {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}
     networks:
-      - byfn
-
+      - hlfnet
 # <!-- BEGIN Peer0 - Adding  -->
   {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}:
       container_name: {PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}
@@ -224,7 +183,7 @@ services:
       depends_on:
         - couchdb2
       networks:
-        - byfn
+        - hlfnet
 # <!-- END Peer0 - Adding  -->
 # <!-- BEGIN Peer1 - Adding  -->
   {PEER_NAME1}.{ORG_3}.{DOMAIN_NAME}:
@@ -235,5 +194,5 @@ services:
       depends_on:
         - couchdb3
       networks:
-        - byfn
+        - hlfnet
 # <!-- END Peer1 - Adding  -->

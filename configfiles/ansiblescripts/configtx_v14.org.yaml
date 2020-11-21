@@ -105,6 +105,8 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('{ORG_2_C}MSP.admin')"
+
+        # Insert here for ORG2 endorsement
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
@@ -138,6 +140,9 @@ Organizations:
             Admins:
                 Type: Signature
                 Rule: "OR('{ORG_3_C}MSP.admin')"
+                
+        # Insert here for  endorsement ORG_3
+
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
@@ -248,7 +253,7 @@ Application: &ApplicationDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
-
+ #Here insert for Application Capabilites insert before
     Capabilities:
         <<: *ApplicationCapabilities
 
@@ -264,7 +269,7 @@ Orderer: &OrdererDefaults
 
     # Orderer Type: The orderer implementation to start
     # Available types are "solo" and "kafka"  and "etcdraft"
-    OrdererType: solo
+    OrdererType: {ORDTYP}
 
     Addresses:
         - {ORD_NAME0}.{DOMAIN_NAME}:7050

@@ -16,7 +16,7 @@ export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/orde
 #go get github.com/hyperledger/fabric-protos-go/peer
 #peer chaincode install -n mycc -v 1.0 -l golang -p github.com/chaincode/chaincode_example02/go/
 #peer chaincode install -n sacc -v 1.0 -l golang -p github.com/chaincode/sacc/
-if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
+if [  $IMAGE_TAG == 2.0.0 ] ||  [  $IMAGE_TAG == 2.1.0  ] || [  $IMAGE_TAG == 2.2.0  ]; 
 then 
 source ./scripts/8a_lccpackageinstall2.0.sh
 lcpackage20
@@ -48,7 +48,7 @@ export CORE_PEER_ID={CLI_NAME}
 export CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
 export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp/tlscacerts/tlsca.{DOMAIN_NAME}-cert.pem
 
-if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
+if [  $IMAGE_TAG == 2.0.0 ] ||  [  $IMAGE_TAG == 2.1.0  ] || [  $IMAGE_TAG == 2.2.0  ]; 
 then 
 source ./scripts/8a_lccpackageinstall2.0.sh
 lcpkinstall20

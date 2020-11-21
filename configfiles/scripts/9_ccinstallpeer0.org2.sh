@@ -10,7 +10,7 @@ export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/users/Admin@{ORG_2}.{DOMAIN_NAME}/msp
 export CORE_PEER_ID={CLI_NAME}
 export CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051
-if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
+if [  $IMAGE_TAG == 2.0.0 ] ||  [  $IMAGE_TAG == 2.1.0  ] || [  $IMAGE_TAG == 2.2.0  ]; 
 then 
 source ./scripts/8a_lccpackageinstall2.0.sh
 lcpkinstall20
@@ -32,7 +32,7 @@ export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/users/Admin@{ORG_2}.{DOMAIN_NAME}/msp
 export CORE_PEER_ID={CLI_NAME}
 export CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:10051
-if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
+if [  $IMAGE_TAG == 2.0.0 ] ||  [  $IMAGE_TAG == 2.1.0  ] || [  $IMAGE_TAG == 2.2.0  ]; 
 then 
 source ./scripts/8a_lccpackageinstall2.0.sh
 lcpkinstall20

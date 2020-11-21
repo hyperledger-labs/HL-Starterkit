@@ -1,0 +1,16 @@
+---
+    # Updting the values for docker-compose-cli-org.yaml file
+
+- name: Insering line for addon org for volume file peer0
+lineinfile:
+  dest: ../docker-compose-cli-org.yaml
+  insertafter: '  {PEER_NAME1}.{ORG_2}.{DOMAIN_NAME}:'
+  firstmatch: yes
+  #line: "  {ORD_NAME1}.{DOMAIN_NAME}:"
+  line: "{{ item }}"
+with_items: 
+  - "  {ORD_NAME1}.{DOMAIN_NAME}:"
+  - "  {ORD_NAME2}.{DOMAIN_NAME}:"
+  - "  {ORD_NAME3}.{DOMAIN_NAME}:"
+  - "  {ORD_NAME4}.{DOMAIN_NAME}:"
+

@@ -1,4 +1,0 @@
-docker service rm hlf_services_ca_org1 hlf_orderer_orderer_org1 hlf_peer_peer0_org1 hlf_peer_peer0_org2 hlf_peer_peer1_org1 hlf_peer_peer1_org2 hlf_services_ca_org2 hlf_services_cli hlf_services_couchdb0_org1 hlf_services_couchdb0_org2 hlf_services_couchdb1_org1 hlf_services_couchdb1_org2
-sleep 2
-docker service ls
-docker ps -a

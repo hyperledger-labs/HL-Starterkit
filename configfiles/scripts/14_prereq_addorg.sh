@@ -1,6 +1,6 @@
 cd org3-artifacts
 export PATH=${PWD}/../bin:${PWD}:$PATH
-export FABRIC_CFG_PATH=${PWD}
+export HL_CFG_PATH=${PWD}
 echo $PWD
 pwd
 sleep 10
@@ -8,7 +8,7 @@ sleep 10
 #rm -rf crypto-config
 #cryptogen generate --config=./org3-crypto.yaml
 sleep 10
-export FABRIC_CFG_PATH=$PWD && ../../bin/configtxgen -printOrg Org3MSP > ../channel-artifacts/org3.json
+export HL_CFG_PATH=$PWD && ../../bin/configtxgen -printOrg Org3MSP > ../channel-artifacts/org3.json
 sleep  5
 
 cd ../ && cp -r crypto-config/ordererOrganizations org3-artifacts/crypto-config/
