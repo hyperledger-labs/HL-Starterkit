@@ -50,7 +50,7 @@ To get started, see the demo video.
 
 6, Consensus type - etcdRaft customaisation - Ready 
 
-##- Todo
+## Todo
 
 7, Kubernatees with basic  & extended deployment for 1.4x and 2.x
 
