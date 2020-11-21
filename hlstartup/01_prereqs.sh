@@ -1,9 +1,18 @@
 #!/bin/sh
-
+source .env
 echo "The prerequistes is scripted to install as per the HLF - https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 to run HL Fabric with the minimum versions of dependency.
 Ex. Golang, Docker, Docker-compose, Node, Npm, python. However, this can be modify according to version needed.
 You can contact me anytime or leave a comment in message to ravinayag@github  or email at  ravinayag@gmail.com"
+
+
+echo " If you do manual running then execute below commands in following sequence, remember you have also placed 
+and extracted your fabric configuration in current folder, if  not please skip this now and extract it before you start this."
+echo 
+echo "source ./01_prereqs.sh"
+echo "prereq14"
+echo "precheck"
+echo "FbinImage"
 
 
 function prereq14 {
@@ -39,7 +48,7 @@ function prereq14 {
     sudo bash nodesource_setup.sh && sudo apt-get install -y nodejs 
     sudo apt-get install -y figlet ansible
     sudo apt-get install -y build-essential checkinstall libssl-dev
-    sudo apt-get upgrade -y
+    #sudo apt-get upgrade -y
 
 
     ##### Add user account to the docker group
@@ -70,15 +79,15 @@ function precheck () {
 
 function FbinImage () {
 
-    su - $(whoami)
+    #su - $(whoami)
     
-    source HLF_Automation/01_networkinfo.sh
+    source $HL_CFG_PATH/hlstartup/01_networkinfo.sh
     HLFver
     #For latest version  of link
     #curl -sSL   https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s
     #### if you need to download specific version follow below syntax
     #curl -sSL http://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
-
+    export `cat $HL_CFG_PATH/.hlc.env | grep IMAGE_TAG`
     curl -sSL http://bit.ly/2ysbOFE | bash -s -- $IMAGE_TAG $CAIMAGE_TAG $DBIMAGE_TAG
     
     if [[ "$IMAGE_TAG" == '1.4.3' ]] ; 

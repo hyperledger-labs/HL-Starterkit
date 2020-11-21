@@ -26,25 +26,22 @@ receiver_email = os.environ.get("TOEMLADDRESS")
 ### gmail
 #sender_email = 'kstechio2019@gmail.com'
 #smtp_server = "smtp.gmail.com"
-#sender_pass = 'kstech@369'
+#sender_pass = '
 
 ### hostinger email
 #sender_email = 'support@blog.knowledgesociety.tech'
 #smtp_server = 'smtp.hostinger.in'
-#sender_pass = '6k:yid6xe8P#'
+#sender_pass = ''
 
 
 
 ### mailgun
 #sender_email = "postmaster@blog.knowledgesociety.tech"
 #smtp_server = "smtp.eu.mailgun.org"
-#sender_pass = 'eae68b91cd2c7ed7e7217d75d6ed2a61-ea44b6dc-2dc6d04f'
+#sender_pass = ''
 #sender_pass = input("Input (Sender) password to authenticate sending mails:")
 
-### ksmail
-sender_email = 'support@ksmail.tech'
-smtp_server = 'mail.ksmail.tech'
-sender_pass = 'support123'
+
 
 port = 587 # For starttls
 

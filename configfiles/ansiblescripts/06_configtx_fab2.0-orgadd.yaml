@@ -42,7 +42,7 @@
            #state: present
            block: "{{ lookup('file', './configtx_org3.txt') }}"
            dest: ./configtx_v20.org.yaml
-           backup: yes
+           #backup: yes
          when: orgcheck.stdout is search('ORG_3') #!= -1
          #when: orgcheck.rc != ''
 
@@ -53,7 +53,7 @@
            #state: present
            block: "{{ lookup('file', './crypto-config-org3.txt') }}"
            dest: ./crypto-config_v20.org.yaml
-           backup: yes
+           #backup: yes
          when: orgcheck.stdout is search('ORG_3') #!= -1
 
        - name: test by shell for sed
@@ -68,7 +68,7 @@
            #state: present
            block: "{{ lookup('file', '../base/peer0addorg3.yaml') }}"
            dest: ../base/docker-compose-base-org.yaml
-           backup: yes
+           #backup: yes
          when: orgcheck.stdout is search('ORG_3') #!= -1
 
        - name: Adding the Orgs to Docker compose files peer1
@@ -88,7 +88,7 @@
            #state: present
            block: "{{ lookup('file', '../base/peer0addorgcli3.yaml') }}"
            dest: ../docker-compose-cli-org.yaml
-           backup: yes
+           #backup: yes
          when: orgcheck.stdout is search('ORG_3') #!= -1
 
        - name: Adding the Orgs to Docker compose files peer1-cli yamlfile

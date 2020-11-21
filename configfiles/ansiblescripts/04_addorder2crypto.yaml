@@ -16,10 +16,10 @@
       filename: "./crypto-config.org.yaml"
 
     tasks:
-       - name: Copy file source crypto-config file
-         copy:
-          src: ./crypto-config.orgsrc.yaml
-          dest: ./crypto-config.org.yaml
+      #  - name: Copy file source crypto-config file
+      #    copy:
+      #     src: ./crypto-config.orgsrc.yaml
+      #     dest: ./crypto-config.org.yaml
 
        - name: Registering ORDERER Check
          shell:  cat ../../.hlc.env | grep ORD_NAME4
