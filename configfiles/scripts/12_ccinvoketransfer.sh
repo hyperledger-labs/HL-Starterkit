@@ -1,4 +1,5 @@
 source scripts/.c.env
+source scripts/.hlc.env
 echo -e $PCOLOR"Sending invoke transaction on {PEER_NAME0}.{ORG_1} {PEER_NAME0}.{ORG_2}..."$NONE
 export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/ca.crt
 export CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/server.key
@@ -25,7 +26,7 @@ export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/orde
 export PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/ca.crt
 export PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/tls/ca.crt
 
-if [[ $IMAGE_TAG == @(2.0.0|2.1.0|2.2.0) ]]; 
+if [  $IMAGE_TAG == 2.0.0 ] ||  [  $IMAGE_TAG == 2.1.0  ] || [  $IMAGE_TAG == 2.2.0  ]; 
 then 
 peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls true --cafile $ORDERER_CA  -C {CHANNEL_NAME1} -n sacc --peerAddresses {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051 --tlsRootCertFiles $PEER0_ORG1_CA  --peerAddresses {PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051 --tlsRootCertFiles $PEER0_ORG2_CA -c '{"Args":["set","name","Peter"]}'
 else

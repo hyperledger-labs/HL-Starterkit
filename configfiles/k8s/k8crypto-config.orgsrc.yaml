@@ -1,0 +1,37 @@
+OrdererOrgs:
+  - Name: {ORD_NAME0_C}
+    Domain: {DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {ORD_NAME0}
+        CommonName: {ORD_NAME0}
+      - Hostname: {ORD_NAME1}
+        CommonName: {ORD_NAME1}
+      - Hostname: {ORD_NAME2}
+        CommonName: {ORD_NAME2}
+PeerOrgs:
+  - Name: {ORG_1_C}
+    Domain: {ORG_1}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+        CommonName: {PEER_NAME0}-{ORG_1}
+      - Hostname: {PEER_NAME1}
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+  
+  - Name: {ORG_2_C}
+    Domain: {ORG_2}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+        CommonName: {PEER_NAME0}-{ORG_2}
+      - Hostname: {PEER_NAME1}
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1

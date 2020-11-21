@@ -12,7 +12,7 @@ volumes:
   {ORD_NAME4}.{DOMAIN_NAME}:
 
 networks:
-  byfn:
+  hlfnet:
 
 services:
 
@@ -22,7 +22,7 @@ services:
       service: orderer-base
     container_name: {ORD_NAME1}.{DOMAIN_NAME}
     networks:
-    - byfn
+    - hlfnet
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME1}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
@@ -37,7 +37,7 @@ services:
       service: orderer-base
     container_name: {ORD_NAME2}.{DOMAIN_NAME}
     networks:
-    - byfn
+    - hlfnet
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
@@ -52,7 +52,7 @@ services:
       service: orderer-base
     container_name: {ORD_NAME3}.{DOMAIN_NAME}
     networks:
-    - byfn
+    - hlfnet
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME3}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
@@ -67,7 +67,7 @@ services:
       service: orderer-base
     container_name: {ORD_NAME4}.{DOMAIN_NAME}
     networks:
-    - byfn
+    - hlfnet
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
         - ./crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME4}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp

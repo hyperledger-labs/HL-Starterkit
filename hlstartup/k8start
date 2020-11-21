@@ -1,0 +1,64 @@
+#!/bin/bash
+
+set -e
+
+HL_CFG_PATH=$PWD
+echo $HL_CFG_PATH
+
+ARGS_NUMBER="$#"
+COMMAND="$1"
+
+
+function k8sArgcheck() {
+
+    if [ $ARGS_NUMBER -ne 1 ]; then
+        echo "Usage: k8start start | status | stop "
+        exit 1;
+    fi
+}
+
+
+
+k8sArgcheck
+case $COMMAND in
+    #source $HL_CFG_PATH/configfiles/k8s/k8s.sh
+    "start")
+        source $HL_CFG_PATH/configfiles/k8s/k8s.sh
+        echo "Checking Orderer and CA Requirements"
+        k8sORDcheck || true
+        k8sCAcheck || true
+        k8sNS
+        echo "Verifying the target Directories.." 
+        verifyDir
+        echo "Copying required file and updating the configurations..." 
+        k8sCPfiles
+        k8sCONFTXCRYPTO
+        k8sSEDreplexe
+        CleanCreateCrypto
+        sleep 1
+        echo "Deploying k8s pod's..."
+        sleep 10
+        k8sDeployPOD
+        echo "Wait for Pods to bootup..."
+        sleep 30
+        echo "Join & break here to run crypto"
+        sleep 20
+        k8sjoinCHL
+        k8sbuildCC
+        k8sCCinstall
+        k8sCCstart
+        echo " Starting explorer ...."
+        k8sexplorer
+        ;;
+    "status")
+        source $HL_CFG_PATH/configfiles/k8s/k8s.sh
+        k8Status
+        ;;
+    "stop")
+        source $HL_CFG_PATH/configfiles/k8s/k8s.sh
+        k8sstop
+        ;;
+    *)
+        echo "Usage: k8start start | status | stop  "
+        exit 1;
+esac

@@ -46,7 +46,7 @@
 
        - name: Inserting the ORG3  to crypto files
          blockinfile:
-           marker: "# <!-- {mark} ANSIBLE MANAGED BLOCK by ravinayag -->"
+           marker: "# <!-- {mark} ANSIBLE MANAGED BLOCK by ravi -->"
            insertafter: EOF
            #state: present
            block: "{{ lookup('file', './crypto-config-org3.txt') }}"
@@ -161,3 +161,7 @@
       #   check_mode: yes
 
 
+
+
+
+      

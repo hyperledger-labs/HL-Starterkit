@@ -1,0 +1,15 @@
+--- #---------------- Chaincode Service ---------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: chaincode-marbles-{ORG_2}
+  namespace: {K8S_NS}
+  labels:
+    app: chaincode-marbles-{ORG_2}
+spec:
+  ports:
+    - name: grpc
+      port: 7052
+      targetPort: 7052
+  selector:
+    app: chaincode-marbles-{ORG_2}

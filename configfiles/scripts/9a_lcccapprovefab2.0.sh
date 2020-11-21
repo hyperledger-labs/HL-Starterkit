@@ -25,7 +25,11 @@ function pkgapproval() {
     elif [ $SAMPLE_CC == "FABCAR" ]; then
     export PACKAGE_ID=$(peer lifecycle chaincode queryinstalled | sed -n "/$CC_LABLNAME/{s/^Package ID: //; s/, Label:.*$//; p;}")
     peer lifecycle chaincode approveformyorg -o {ORD_NAME0}.{DOMAIN_NAME}:7050  --tls --cafile $ORDERER_CA --channelID {CHANNEL_NAME1} --signature-policy "OR('{ORG_1_C}MSP.peer', '{ORG_2_C}MSP.peer')" --name $CC_LABLNAME --version 1.0 --package-id ${PACKAGE_ID} --sequence 1
-    
+  
+    elif [ $SAMPLE_CC == "MARBLES" ]; then
+    export PACKAGE_ID=$(peer lifecycle chaincode queryinstalled | sed -n "/$CC_LABLNAME/{s/^Package ID: //; s/, Label:.*$//; p;}")
+    peer lifecycle chaincode approveformyorg -o {ORD_NAME0}.{DOMAIN_NAME}:7050  --tls --cafile $ORDERER_CA --channelID {CHANNEL_NAME1} --signature-policy "OR('{ORG_1_C}MSP.peer', '{ORG_2_C}MSP.peer')" --name $CC_LABLNAME --version 1.0 --package-id ${PACKAGE_ID} --sequence 1
+      
     else 
     echo -e $COLOR"Unknown package for approval"$NONE
 

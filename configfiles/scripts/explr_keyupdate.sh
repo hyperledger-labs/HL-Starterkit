@@ -1,7 +1,7 @@
 #cp first-network.json.org first-network.json.var
 echo " move to exploerer directory and run tnis"
 
-export HOMEPATH=$FABRIC_CFG_PATH
+export HOMEPATH=$HL_CFG_PATH
 echo
 sed "s|{HOMEPATH}|$HOMEPATH|g" app/platform/fabric/connection-profile/first-network.json.var >app/platform/fabric/connection-profile/first-network.json1
 
