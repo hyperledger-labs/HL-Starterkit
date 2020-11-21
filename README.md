@@ -1,7 +1,7 @@
 # HL-learnerscript
 Hyperledger CLI Config Generator Tool   
 
-# HL_Learners Tool Automation
+# HL_Starterkit Automation
 
 Disclaimer : Its fork from Hyperledger fabric samples[https://github.com/hyperledger/fabric-samples],  On my self Interest I created this Devops Automation for HL Learners/Startup Community.  
 I'm looking for tester community to fine tune this tool  to serve better. 
