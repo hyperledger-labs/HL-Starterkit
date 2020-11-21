@@ -50,17 +50,19 @@ To get started, see the demo video.
 
 6, Consensus type - etcdRaft customaisation - Ready 
 
+7, Kubernatees with basic  & extended deployment for 1.4x and 2.x ( Tested with 2.x, )
+
+8, Samples 1.4x = SACC, 2.x= Asset-transfer-Basic, SACC, ABAC -  Ready 
+
 ## Todo
 
-7, Kubernatees with basic  & extended deployment for 1.4x and 2.x
+9, Privatedata with private channel
 
-8, Privatedata with private channel
+10, Add option for Custom chaincode ( Approching Chain code developers)
 
-9, Add option for Custom chaincode
+11, Add other chaincodes for test
 
-10, Add other chaincodes for test
+12, Optimize the scripts
 
-11, Optimize the scripts
 
-12, Samples 1.4x = SACC, 2.x= Asset-transfer-Basic, SACC, ABAC -  Ready 
 
