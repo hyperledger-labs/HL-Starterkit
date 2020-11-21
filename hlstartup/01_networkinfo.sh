@@ -6,8 +6,6 @@ echo " "
 echo " "
 
 
-
-
 function selBCNet() {
     echo -e $GCOLOR"########  Starting custom script for Distributed Network Configuration ##########"$NONE
     echo " "
@@ -30,17 +28,22 @@ function selBCNet() {
           ;;
           Hyperledger-Besu)
              echo "Go to besu"
-             echo -e $BCOLOR" Development Work in Progress "$NONE
+             echo -e $RCOLOR" Development Work in Progress "$NONE
              BCNET=HLBESU
              echo "BCNET=HLBESU" > .hlc.env
+             sleep 3
+             exit 1
              break
           ;;
           Hyperledger-Sawtooth)
              echo "Go to Sawtooth"
              BCNET=HLSAWT
              echo "BCNET=HLSAWT" > .hlc.env
-             echo -e $BCOLOR" Development Work in Progress "$NONE
+             echo -e $RCOLOR" Development Work in Progress "$NONE
+             sleep 3
+             exit 1
              break
+             
           ;;
           Explorer)
              echo "Go to Explorer, 
@@ -55,7 +58,7 @@ function selBCNet() {
              startexplore
              else echo "Skipping local fabric start and generatiing the configurations..."
              fi
-             exit
+             exit 1
              break
           ;;
           Pre-requisties-Fabric)
@@ -68,7 +71,9 @@ function selBCNet() {
             FbinImage
             echo -e $PCOLOR" Fabric Prerequsties installation completed, Please rerun the script and choose HL BC Network"$NONE
             else echo "Skipping local fabric start and generatiing the configurations..."
+            exit 1
             fi
+            exit 1
             break
             exit 1
           ;;
@@ -89,12 +94,11 @@ function selBCNet() {
 function selvirtcontainer() {
     echo
     echo
-    cd $HL_CFG_PATH
+    echo .env
     source .hlc.env
+    cd $HL_CFG_PATH
     echo -e $BCOLOR"How do you want to run your network?  On - [Single Host / DockerSwarm / kubernatees ] "$NONE
-    # read yn
-    # case $yn in
-    #     [[yY] | [yY][Ee][Ss] )
+
             echo -e $BCOLOR"Select your container Service..?"$NONE
             PS3="Enter your choice (must be a above number): "
             select CONTSERV in Single-host Docker-Swarm Kubernatees exit
@@ -109,8 +113,9 @@ function selvirtcontainer() {
                         if [ $HLENV != WEB ];then
                             source $HL_CFG_PATH/hlstartup/01_singlehost.sh
                             network_start
-                        else echo "Skipping local fabric start and generatiing the configurations..."
-                        source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect
+                        else 
+                        echo "Skipping local fabric start and generatiing the configurations..."
+                        source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
                         SEDpeernetconnect #updating the Values
                         fi
                         break
@@ -148,6 +153,12 @@ function selvirtcontainer() {
                         ./configfiles/k8s/k8start start
                         else echo "Skipping local fabric start and generatiing the configurations..."
                         source $HL_CFG_PATH/configfiles/k8s/k8s.sh
+                        k8sORDcheck || true
+                        k8sCAcheck || true
+                        k8sNS
+                        verifyDir
+                        k8sCPfiles
+                        k8sCONFTXCRYPTO
                         k8sSEDreplexe #updating the Values
                         fi
                         
@@ -161,14 +172,7 @@ function selvirtcontainer() {
                     ;;
                 esac
             done            
-        # ;;
-        # [nN] | [n|N][O|o] )
-        # echo ".....Skipping to docker custom files."
-        # ;;
-        # *) echo "Invalid input"
-        # exit 1
-        # ;;
-    # esac
+
 
 }
 
@@ -311,6 +315,7 @@ function AskconfEmail () {
             echo $TOEMLADDRESS
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
+            echo "TOEMLADDRESS=$TOEMLADDRESS" && date >> ./configfiles/emailssent
             if [ $ORDCOUNT -eq 0 -a $CONT==SINGLE ]; then 
                 tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
                 yes | cp $DOMAIN_NAME.tar.gz /tmp/

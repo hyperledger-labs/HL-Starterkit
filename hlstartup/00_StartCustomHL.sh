@@ -22,18 +22,9 @@ source .env
 #
 #docker volume prune -f
 #docker network prune -f
-#clear  #Need to remove on final stage
-
-
-echo "Note : You need to complete the prerequisites to perform this configrator cli tool better.
-if you haven't please do so. https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
-I also compresed with all the prerequisites need,  you can download this script and run on  your lunix/ubuntu machine.
-You can contact me anytime or leave a comment in message to ravinayag@github  or email at  ravinayag@gmail.com
-Pre req script for 1.4 : https://github.com/ravinayag/Hyperledger/blob/master/prereqs_hlfv14.sh
-
-"
 
 source .c.env
+source .env
 
 #. 01_networkinfo.sh
 
@@ -510,10 +501,12 @@ function ScriptVerCopy () {
 
 
 function createChannelArtifacts() {
+    source $HL_CFG_PATH/.hlc.env
     echo 
+
     echo -e $BCOLOR"Do you want to create channel artifacts? [y,n]"$NONE
     echo "Note : It will create new crypto materials & channel artifacts"
-    read yn
+    if [ $HLENV != "WEB" ];then read yn; else yn=y; fi
     case $yn in
         [[yY] | [yY][Ee][Ss] )
             
@@ -526,7 +519,8 @@ function createChannelArtifacts() {
             sed -i -e "s/{ORG_2_C}/$ORG_2_C/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{SYS_CHANNEL}/$SYS_CHANNEL/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{CHANNEL_NAME1}/$CHANNEL_NAME1/g" ./scripts/1a_firsttimeonly.sh
-            ./scripts/1a_firsttimeonly.sh
+            if [ $HLENV != "WEB" ];then ./scripts/1a_firsttimeonly.sh; else echo "Generate crypto artifacts manually from zip file." ; fi
+            
         ;;
         [nN] | [n|N][O|o] )
         ;;
@@ -538,7 +532,13 @@ function createChannelArtifacts() {
 
 
 ### Replacing KEY values
+
+
 function replKeys () {
+
+    source $HL_CFG_PATH/.hlc.env
+    
+    if [ $HLENV != "WEB" ];then 
     ORG1KEY="$(ls crypto-config/peerOrganizations/$ORG_1.$DOMAIN_NAME/ca/ | grep 'sk$')"
     sed -i -e "s/{ORG1-CA-KEY}/$ORG1KEY/g" ./base/ca-base.yaml
 
@@ -552,6 +552,8 @@ function replKeys () {
 
     ORG2TLSKEY="$(ls crypto-config/peerOrganizations/$ORG_2.$DOMAIN_NAME/tlsca/ | grep 'sk$')"
     sed -i -e "s/{ORG2-TLSCA-KEY}/$ORG2TLSKEY/g" ./base/ca-base.yaml
+    else echo ""
+    fi
 }
 
 
