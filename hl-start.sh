@@ -23,13 +23,15 @@ Please remember, Currently the tool will not generate any crypto artifacts, due 
 source .env
 source .c.env
 
-## Selecing the Blockchain Network
+source $HL_CFG_PATH/hlstartup/00_StartCustomHL.sh
 source $HL_CFG_PATH/hlstartup/01_networkinfo.sh
-selBCNet
 
 ## Custominzing the Configurations
-source $HL_CFG_PATH/hlstartup/00_StartCustomHL.sh
 checkenv
+
+## Selecing the Blockchain Network
+selBCNet
+
 
 customDom
 echo  -e $BCOLOR"##################################################################"$NONE && echo ""

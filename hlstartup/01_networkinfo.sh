@@ -20,7 +20,7 @@ function selBCNet() {
           Hyperledger-Fabric)
              echo "Go to fabric"
              BCNET=HLFAB
-             echo "BCNET=HLFAB" > .hlc.env
+             echo "BCNET=HLFAB" >> .hlc.env
              HLFver
              echo ""
              echo ""
@@ -30,7 +30,7 @@ function selBCNet() {
              echo "Go to besu"
              echo -e $RCOLOR" Development Work in Progress "$NONE
              BCNET=HLBESU
-             echo "BCNET=HLBESU" > .hlc.env
+             echo "BCNET=HLBESU" >> .hlc.env
              sleep 3
              exit 1
              break
@@ -38,7 +38,7 @@ function selBCNet() {
           Hyperledger-Sawtooth)
              echo "Go to Sawtooth"
              BCNET=HLSAWT
-             echo "BCNET=HLSAWT" > .hlc.env
+             echo "BCNET=HLSAWT" >> .hlc.env
              echo -e $RCOLOR" Development Work in Progress "$NONE
              sleep 3
              exit 1
@@ -47,6 +47,9 @@ function selBCNet() {
           ;;
           Explorer)
              echo "Go to Explorer, 
+             echo "BCNET=FABEXPLOR" >> .hlc.env
+             source $HL_CFG_PATH/.hlc.env
+
              Explorer comes with any of Hyperledger framework, & by now it runs with fabric as default,
                     Run the Fabric Network first and start explorer"
              echo   "" >> 00_StartCustomHL.sh
@@ -56,13 +59,17 @@ function selBCNet() {
              source $HL_CFG_PATH/hlstartup/./08_expstart.sh
              explorerConfig
              startexplore
-             else echo "Skipping local fabric start and generatiing the configurations..."
+             else echo "Skipped local fabric start ."
+             echo "Please select the Fabric network first and provide your custom names to generate explorer configuration "
+             exit 1
              fi
              exit 1
              break
           ;;
           Pre-requisties-Fabric)
             echo "Go to Prerequiste"
+            echo "BCNET=FABPREREQ" >> .hlc.env
+            source $HL_CFG_PATH/.hlc.env
             echo -e $PCOLOR" This prerequisite is only applicable for Hyperledger Fabric 1.4x or 2.x, Kindly leverage this facility appropriately "$NONE
             if [ $HLENV != "WEB" ];then
             source $HL_CFG_PATH/hlstartup/01_prereqs.sh
@@ -71,6 +78,7 @@ function selBCNet() {
             FbinImage
             echo -e $PCOLOR" Fabric Prerequsties installation completed, Please rerun the script and choose HL BC Network"$NONE
             else echo "Skipping local fabric start and generatiing the configurations..."
+            AskconfEmail
             exit 1
             fi
             exit 1
@@ -116,6 +124,8 @@ function selvirtcontainer() {
                         else 
                         echo "Skipping local fabric start and generatiing the configurations..."
                         source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
+                        cd $HL_CFG_PATH/scripts
+                        
                         SEDpeernetconnect #updating the Values
                         fi
                         break
@@ -315,13 +325,14 @@ function AskconfEmail () {
             echo $TOEMLADDRESS
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
-            echo "TOEMLADDRESS=$TOEMLADDRESS" && date >> ./configfiles/emailssent
+            echo "TOEMLADDRESS=$TOEMLADDRESS"  >> ./configfiles/emailssent
+            date >> ./configfiles/emailssent
             if [ $ORDCOUNT -eq 0 -a $CONT==SINGLE ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml configfiles/web/web-fab-start-single.sh 
                 yes | cp $DOMAIN_NAME.tar.gz /tmp/
                 yes | cp configfiles/emailsend.py emailsend.py
             elif [ $ORDCOUNT -ge 1 -a $CONT==SINGLE ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml configfiles/web/web-fab-start-single.sh
                 yes | cp $DOMAIN_NAME.tar.gz /tmp/
                 yes | cp configfiles/emailsend.py emailsend.py
             elif [ $CONT==DSWARM  ]; then

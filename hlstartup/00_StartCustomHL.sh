@@ -33,9 +33,9 @@ function checkenv () {
       awk -F: '/cpuset/ && $3 ~ /^\/$/{ c=1 } END { exit c }' /proc/self/cgroup
     }
     if running_on_container; then
-      echo "HLENV=WEB" >> .hlc.env
+      echo "HLENV=WEB" > .hlc.env
     else 
-      echo "HLENV=LOCAL" >> .hlc.env
+      echo "HLENV=LOCAL" > .hlc.env
     fi
 
 }
@@ -155,10 +155,15 @@ function customPeer() {
 function customOrder() {
     read -p "How Many Order nodes you need (default:1 for solo, 5 for RAFT;  starts with 0 ) : " ORDCOUNT
     if [ -z $ORDCOUNT ];then echo  "Taking default"; ORDCOUNT="0" ; 
-    elif [ $ORDCOUNT > 5 ]; then 
+    elif [ $ORDCOUNT -gt 5 ]; then 
         echo "Sorry, Currently Orderer's are  limited to 5"
         ORDCOUNT=$(($ORDCOUNT*0+4))
-    else ORDCOUNT=$(($ORDCOUNT-1)); fi;
+        
+    else 
+        ORDCOUNT=$(($ORDCOUNT-1));
+
+     fi;
+
     if [[ $ORDCOUNT =~ ^[+-]?[0-9]+$ ]]; then
     #echo $(($ORDCOUNT-1))
     echo $ORDCOUNT
@@ -365,7 +370,6 @@ function checkORG3() {
         raftadd
         cd ../../
         cp ./configfiles/ansiblescripts/configtx_v14.org.yaml ./configtx.yaml
-        cp ./configfiles/ansiblescripts/crypto-config_v20.org.yaml ./crypto-config.yaml
         cp ./configfiles/base/docker-compose-base-org.yaml ./base/docker-compose-base.yaml
         cp ./configfiles/base/peer-base-org.yaml ./base/peer-base.yaml
         cp ./configfiles/base/ca-base-org.yaml ./base/ca-base.yaml
@@ -427,7 +431,7 @@ function SEDing () {
 function SEDordraft() {
     cp configfiles/ansiblescripts/orderer-doc-comp-raft-org.yaml ./docker-compose-orderer-etcraft.yaml
     
-    for file in crypto-config.yaml configtx.yaml docker-compose-orderer-etcraft.yaml
+    for file in crypto-config.yaml configtx.yaml docker-compose-orderer-etcraft.yaml docker-compose-cli.yaml
     do
         #echo "Processing $file"
         sed -i -e "s/{DOMAIN_NAME}/$DOMAIN_NAME/g" $file
