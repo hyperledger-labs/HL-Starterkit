@@ -1,7 +1,7 @@
 source scripts/.c.env
 source scripts/.hlc.env
 export CC_LABLNAME="${SAMPLE_CC,,}"
-echo -e $PCOLOR"Commiting the chaincode : ${ORG_1}, ${ORG_2} ..."$NONE
+echo -e $PCOLOR"Commiting the chaincode : {ORG_1}, {ORG_2} ..."$NONE
 export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/ca.crt
 export CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/server.key
 export CORE_PEER_LOCALMSPID={ORG_1_C}MSP
@@ -40,53 +40,84 @@ if [ $SAMPLE_CC == "ASSETTRANSFER" ]; then
 elif [ $SAMPLE_CC == "SACC" ];then
     peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["set","name","fabric-v2"]}'
 elif [ $SAMPLE_CC == "ABSTORE" ]; then
-    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["set","a","10","b","20"]}'
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["Init","a","100","b","200"]}'
 elif [ $SAMPLE_CC == "ABAC" ]; then
-    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["a","500"]}'
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["A","500"]}'
 elif [ $SAMPLE_CC == "FABCAR" ]; then
     peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["initLedger"]}'
 elif [ $SAMPLE_CC == "MARBLES" ]; then
-    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["initLedger"]}'
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
 
 else
     echo " Unknown invoke commands"
 fi
+
 #peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"function":"InitLedger","Args":[]}'
 #peer chaincode invoke -o orderer0.example.com:7050 --tls --cafile $ORDERER_CA -C mychannel -n assetbasic $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["initLedger"]}'
 #peer chaincode invoke -o orderer0.example.com:7050 --tls --cafile $ORDERER_CA -C mychannel -n sacc $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["set","country","india"]}'
 sleep 3
-echo -e $PCOLOR"Querying the chaincode for ORGs - ${ORG_1} "$NONE
+echo -e $PCOLOR"Querying the chaincode for ORGs - {ORG_1} "$NONE
 
 if [ $SAMPLE_CC == "ASSETTRANSFER" ]; then 
     echo -e $PCOLOR"Getting all assets for reference "$NONE
     sleep 5
     peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["GetAllAssets"]}'
-    echo -e $PCOLOR"Querying the specific Asset for invoke transaction  from ${ORG_1} "$NONE
+    echo -e $PCOLOR"Querying the specific Asset for invoke transaction  from {ORG_1} "$NONE
     sleep 5
-    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1  -c '{"function":"ReadAsset","Args":["asset6"]}'
-    
-    echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1  -c '{"function":"ReadAsset","Args":["asset6"]}'   
+    echo -e $PCOLOR"Invoke transaction to specific Asset from {ORG_1} "$NONE
     sleep 5
     peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1  -c '{"function":"TransferAsset","Args":["asset6","Christopher"]}'
 
 elif [ $SAMPLE_CC == "SACC" ];then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["query","name"]}'
-
-    echo -e $PCOLOR"Invoke transaction to specific asset from ${ORG_1} "$NONE
-    #echo "Nil"
+    echo -e $PCOLOR"Querying the specific name before transaction  from {ORG_1} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","name"]}'
+    echo -e $PCOLOR"Invoke transaction to specific asset from {ORG_1} "$NONE
     peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["set","name","HLfab-v2.0"]}'
+    sleep 5
+    echo -e $PCOLOR"Querying the specific name after transaction  from {ORG_1} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","name"]}'
+
 elif [ $SAMPLE_CC == "ABSTORE" ]; then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["query","a"]}'
-        echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
-    echo "Nil"
+    echo -e $PCOLOR"Querying the specific A B Values for invoke transaction  from {ORG_1} "$NONE
+    sleep 5
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","a"]}'
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","b"]}'
+    echo -e $PCOLOR"Invoke transaction to specific Asset from {ORG_1} "$NONE
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["invoke","a","b","10"]}'
+
 elif [ $SAMPLE_CC == "ABAC" ]; then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["query","a"]}'
-        echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","a"]}'
+        echo -e $PCOLOR"Invoke transaction to specific Asset from {ORG_1} "$NONE
     echo "Nil"
+
 elif [ $SAMPLE_CC == "FABCAR" ]; then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["queryCar","CAR0"]}'
-        echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
-    echo "Nil"
+    sleep 5
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["queryCar","CAR0"]}' 
+    echo -e $PCOLOR"Invoke transaction by creating a new CAR from {ORG_1} "$NONE
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c  '{"function": "createCar","Args":["Battery-Car", "Tesla", "A100", "Bright-Red", "vinayag"]}'
+    sleep 5
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["queryAllCars"]}' 
+    ## PRIVATE DATA 
+    # export CAR=$(echo -n "{\"key\":\"1369\", \"make\":\"Tesla\",\"model\":\"Tesla A1\",\"color\":\"White\",\"owner\":\"vinayag\",\"price\":\"500000\"}" | base64 | tr -d \\n)
+    # peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"function": "createPrivateCar", "Args":[]}' --transient "{\"car\":\"$CAR\"}"
+    # Query Private Car by Id
+    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readPrivateCar","Args":["1369"]}'
+    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readCarPrivateDetails","Args":["1369"]}'
+
+elif [ $SAMPLE_CC == "MARBLES" ]; then
+    echo -e $PCOLOR"Invoke transaction by creating a new marble from {ORG_1} "$NONE
+    peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1 -c '{"Args":["initMarble","marble1","blue","35","tom"]}'
+    sleep 5
+    echo -e $PCOLOR"Querying transaction created with new marble from {ORG_1} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["readMarble","marble1"]}'
+    echo -e $PCOLOR"Initiating a transfer, created with new marble from {ORG_1} "$NONE
+    sleep 2
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["transferMarble","marble1","jerry"]}'
+    echo -e $PCOLOR"Querying transaction created for transfer marble from {ORG_1} "$NONE
+    sleep 5
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["readMarble","marble1"]}'
+
 else
     echo " unknown query commands"
 fi
@@ -95,7 +126,7 @@ fi
 
 
 
-echo -e $PCOLOR"Querying the specific Asset for invoke transaction  from ${ORG_2} "$NONE
+echo -e $PCOLOR"Querying the specific Asset for invoke transaction  from {ORG_2} "$NONE
 sleep 5
 export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/tls/ca.crt
 export CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/server.key
@@ -108,31 +139,36 @@ export CORE_PEER_ID={CLI_NAME}
 export CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}:9051
 export ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp/tlscacerts/tlsca.{DOMAIN_NAME}-cert.pem
 
-#peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1  -c '{"function":"ReadAsset","Args":["asset6"]}'
 
 if [ $SAMPLE_CC == "ASSETTRANSFER" ]; then 
-    
     sleep 5
- 
+    echo -e $PCOLOR"Querying the specific asset after transaction  from {ORG_2} "$NONE
     peer chaincode invoke -o {ORD_NAME0}.{DOMAIN_NAME}:7050 --tls --cafile $ORDERER_CA -C {CHANNEL_NAME1} -n $CC_LABLNAME $PEER_CONN_PARMS $PEER_CONN_PARMS1  -c '{"function":"ReadAsset","Args":["asset6"]}'
-    
 
 elif [ $SAMPLE_CC == "SACC" ];then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["query","name"]}'
+    sleep 5
+    echo -e $PCOLOR"Querying the specific name after transaction  from {ORG_2} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","name"]}'
 
+elif [ $SAMPLE_CC == "ABSTORE" ]; then  
+    sleep 5
+    echo -e $PCOLOR"Querying the specific A B Values after invoked transaction  from {ORG_2} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","a"]}'
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","b"]}'
 
-elif [ $SAMPLE_CC == "ABSTORE" ]; then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["query","a"]}'
-        echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
-    echo "Nil, Under Development"
 elif [ $SAMPLE_CC == "ABAC" ]; then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["query","a"]}'
-        echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
-    echo "Nil Under Development"
+    echo -e $PCOLOR"Quering a transaction to specific Asset from {ORG_2} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["query","a"]}'
+    echo "Nil, Under Development"
+
 elif [ $SAMPLE_CC == "FABCAR" ]; then
-    peer chaincode query -C mychannel -n $CC_LABLNAME -c '{"Args":["queryCar","CAR0"]}'
-        echo -e $PCOLOR"Invoke transaction to specific Asset from ${ORG_1} "$NONE
-    echo "Nil Under Development"
+    echo -e $PCOLOR"Querying the specific CAR after invoked transaction from {ORG_2} "$NONE
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["queryCar","Battery-Car"]}'
+
+elif [ $SAMPLE_CC == "MARBLES" ]; then
+    echo -e $PCOLOR"Querying transaction created for transfer marble from {ORG_2} "$NONE
+    sleep 5
+    peer chaincode query -C {CHANNEL_NAME1} -n $CC_LABLNAME -c '{"Args":["readMarble","marble1"]}'    
 else
     echo " Unknown query commands"
 fi

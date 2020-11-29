@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # HLF_Automation
 
 Disclaimer : On my self Interest for Devops Automation
@@ -58,8 +57,3 @@ To get started, see the demo video.
 11, Optimize the scripts
 
 12, Samples 1.4x = SACC, 2.x= Asset-transfer-Basic, SACC, ABAC -  Ready 
-=======
-# HL CLI Microservices
-
-HYPERLEDGER  CLI Micro service Starter kit for Developers
->>>>>>> 3d9422202e4e533323855807aba9025e6205371e

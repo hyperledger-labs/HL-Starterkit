@@ -59,7 +59,7 @@ spec:
                 path: /home/ravi/storage/pgdata
             - name: init-script1
               hostPath: 
-                path: /home/ravi/fabric-samples/HLF_Automation/k8sdocker-entrypoint.sh
+                path: {HOME_DIR_PATH}/k8sdocker-entrypoint.sh
             # - name: init-script
             #   configMap:
             #     name: pgsql-db-init-script

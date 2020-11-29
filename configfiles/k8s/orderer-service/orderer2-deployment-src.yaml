@@ -88,10 +88,10 @@ spec:
             type: DirectoryOrCreate
         - name: {ORD_NAME2}-drv0
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/channel-artifacts/genesis.block
+            path: {HOME_DIR_PATH}/channel-artifacts/genesis.block
         - name: {ORD_NAME2}-drv1
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}/msp
+            path: {HOME_DIR_PATH}/crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}/msp
         - name: {ORD_NAME2}-drv2
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}/tls
+            path: {HOME_DIR_PATH}/crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME2}/tls

@@ -91,30 +91,25 @@ function swarmHost() {
     read -p "Give your ORG_1 Hostname :" ORG1_HOSTNAME
     #if [ -z $ORG_2 ];then echo  "Taking default"; ORG_2="org2"; else ORG_2="$ORG_2"; fi;
     echo $ORG1_HOSTNAME
-    
+
     
     ping -q -c2 $ORG1_HOSTNAME > /dev/null
     
     #ping -q -c2 $i > /dev/null
-    if [ $? -eq 0 ] ;
-    then
+    if [ $? -eq 0 ] ;then
         echo -e  $GRCOLOR">>> $ORG1_HOSTNAME Pingable"$NONE 
         echo "ORG1_HOSTNAME=$ORG1_HOSTNAME" > .swarm-var.env
     else 
         echo -e $RCOLOR">>> $ORG1_HOSTNAME Not Pingable"$NONE
         read -p "Give your ORG_1 IPAddress :" ORG1_IPADDRESS
         ping -q -c2 $ORG1_IPADDRESS > /dev/null
-        if [ $? -eq 0 ] 
-        then 
+        if [ $? -eq 0 ] ;then 
             echo -e $GRCOLOR">>> $ORG1_IPADDRESS Pingable"$NONE
             echo "ORG1_IPADDRESS=$ORG1_IPADDRESS" > .swarm-var.env
         else
             echo -e $RCOLOR">>> $ORG1_IPADDRESS Not Pingable, Contact SYSADMIN or Check your DNS or Network Configuration"
         fi
-    
     fi
-    
-
     echo 
     echo
     read -p "Give your ORG_2 Hostname :" ORG2_HOSTNAME
@@ -123,24 +118,21 @@ function swarmHost() {
 
     ping -q -c2 $ORG2_HOSTNAME > /dev/null
     
-    if [ $? -eq 0 ] 
-    then
+    if [ $? -eq 0 ] ; then
         echo -e  $GRCOLOR">>> $ORG2_HOSTNAME Pingable"$NONE 
         echo "ORG2_HOSTNAME=$ORG2_HOSTNAME" >> .swarm-var.env
     else
         echo -e $RCOLOR">>> $ORG2_HOSTNAME Not Pingable"$NONE
         read -p "Give your ORG_2 IPAddress :" ORG2_IPADDRESS   
         ping -q -c2 $ORG2_IPADDRESS > /dev/null
-        if [ $? -eq 0 ] 
-        then 
+        if [ $? -eq 0 ] ; then 
             echo -e $GRCOLOR">>> $ORG2_IPADDRESS Pingable"$NONE
             echo "ORG2_IPADDRESS=$ORG2_IPADDRESS" >> .swarm-var.env
         else
             echo -e $RCOLOR">>> $ORG2_IPADDRESS Not Pingable, Contact SYSADMIN or Check your DNS or Network Configuration"
         fi
     fi
-   
-    
+      
 }
 
 
@@ -237,15 +229,20 @@ function swarmscp() {
         echo -e $YCOLOR"Cleaning if any previous installs of docker swarm network from current node..."$NONE
         docker swarm leave -f  2> /dev/null
         sleep 1
+        
         NETi=`echo -e $BCOLOR"Provide a Network Interface name  for swarm initialize :"$NONE`
         read -p "$NETi" NETi1
         echo "netifone=$NETi1" >> .swarm-var.env
+
+        ##if [ $HLENV != "WEB" ];then
+        
         docker node ls 2> /dev/null #| grep "Leader"
         if [ $? -ne 0 ]; then
             docker swarm init --advertise-addr $NETi1 > /dev/null 2>&1
             echo -e $PCOLOR"Docker Swarm Network Initialised"$NONE
             docker node ls 
         fi
+
         # get join token
         SWARM_TOKEN=$(docker swarm join-token -q worker)
 #
