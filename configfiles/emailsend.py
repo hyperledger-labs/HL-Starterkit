@@ -4,7 +4,7 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+from email.mime.application import MIMEApplication
 
 ##Loading Environment 
 
@@ -31,16 +31,20 @@ receiver_email = os.environ.get("TOEMLADDRESS")
 ### hostinger email
 #sender_email = 'support@blog.knowledgesociety.tech'
 #smtp_server = 'smtp.hostinger.in'
-#sender_pass = ''
+#sender_pass = '6k:yid6xe8P#'
 
 
 
 ### mailgun
-#sender_email = "postmaster@blog.knowledgesociety.tech"
-#smtp_server = "smtp.eu.mailgun.org"
-#sender_pass = ''
+# sender_email = "postmaster@blog.knowledgesociety.tech"
+# smtp_server = "smtp.eu.mailgun.org"
+# sender_pass = 'eae68b91cd2c7ed7e7217d75d6ed2a61-ea44b6dc-2dc6d04f'
 #sender_pass = input("Input (Sender) password to authenticate sending mails:")
 
+### ksmail
+sender_email = 'support@ksmail.tech'
+smtp_server = "mail.ksmail.tech"
+sender_pass = 'support123'
 
 
 port = 587 # For starttls
@@ -81,26 +85,35 @@ KSTECH
 
 
 # Add body to email
-message.attach(MIMEText(text, "plain"))
+#message.attach(MIMEText(text, "plain"))
+body_part = MIMEText(text, 'plain')
 #message.attach(MIMEText(html, "html")
 filen = os.environ.get("DOMAIN_NAME").replace('\n','')
 path1= '/tmp/'
 filext = '.tar.gz'
-file_name = os.path.join( path1, filen + filext)  
+file_name = os.path.join( filen + filext)  
 attach_file_name = os.path.join(filen)  
+#attach_file_name = os.path.join( path1, filen + "." + filext)  
 #print (attach_file_name)
 # Open PDF file in binary mode
-with open(file_name, "rb") as attachment:
-    # Add file as application/octet-stream
-    # Email client can usually download this automatically as attachment
-    part = MIMEBase("application", "x-gzip")
-    part.set_payload(attachment.read())
+# with open(file_name, "rb") as attachment:
+#     # Add file as application/octet-stream
+#     # Email client can usually download this automatically as attachment
+#     part = MIMEBase("application", "x-gzip")
+#     part.set_payload(attachment.read())
+
+# Add body to email
+message.attach(body_part)
+# open and read the file in binary
+with open(file_name,'rb') as file:
+# Attach the file with filename to the email
+    message.attach(MIMEApplication(file.read(), Name=file_name))
 
 # Encode file in ASCII characters to send by email    
-encoders.encode_base64(part)
+# encoders.encode_base64(part)
 
-part.add_header('Content-Decomposition', "attachment; filename=\"%s.tar.gz\"" % (attach_file_name))
-message.attach(part)
+# part.add_header('Content-Decomposition', "attachment; filename=\"%s.tar.gz\"" % (attach_file_name))
+# message.attach(part)
 
 
 

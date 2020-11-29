@@ -1,4 +1,7 @@
 #!/bin/sh
+
+echo README FIRST 
+
 source .env
 echo "The prerequistes is scripted to install as per the HLF - https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 to run HL Fabric with the minimum versions of dependency.
@@ -12,8 +15,10 @@ echo
 echo "source ./01_prereqs.sh"
 echo "prereq14"
 echo "precheck"
-echo "FbinImage"
 
+echo "## Optional, only you know the images to dowload. Update the Env variables for 'IMAGE_TAG CAIMAGE_TAG DBIMAGE_TAG'"
+echo "FbinImage"   
+echo "for Ex : DBIMAGE_TAG=0.4.18 CAIMAGE_TAG=1.4.7 IMAGE_TAG=1.4.7"
 
 function prereq14 {
     ### export environment variables for current shell.
@@ -79,14 +84,8 @@ function precheck () {
 
 function FbinImage () {
 
-    #su - $(whoami)
-    
-    source $HL_CFG_PATH/hlstartup/01_networkinfo.sh
-    HLFver
-    #For latest version  of link
-    #curl -sSL   https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s
-    #### if you need to download specific version follow below syntax
-    #curl -sSL http://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
+ 
+    source .hlc.env
     export `cat $HL_CFG_PATH/.hlc.env | grep IMAGE_TAG`
     curl -sSL http://bit.ly/2ysbOFE | bash -s -- $IMAGE_TAG $CAIMAGE_TAG $DBIMAGE_TAG
     
@@ -96,6 +95,13 @@ function FbinImage () {
         docker tag hyperledger/fabric-couchdb:0.4.15 couchdb:0.4.15; 
     else echo "error in imaging"; 
     fi
+
+    # source $HL_CFG_PATH/hlstartup/01_networkinfo.sh
+    # HLFver
+    #For latest version  of link
+    #curl -sSL   https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s
+    #### if you need to download specific version follow below syntax
+    #curl -sSL http://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
 
 
 }

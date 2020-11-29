@@ -86,15 +86,15 @@ spec:
       volumes:
         - name: {PEER_NAME0}-{ORG_2}-drv1
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/msp
+            path: {HOME_DIR_PATH}/crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/msp
             type: Directory
         - name: {PEER_NAME0}-{ORG_2}-drv2
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/tls
+            path: {HOME_DIR_PATH}/crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/{PEER_NAME0}.{ORG_2}.{DOMAIN_NAME}/tls
             type: Directory
         - name: {PEER_NAME0}-persistentdata
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/storage/{PEER_NAME0}-{ORG_2}
+            path: {HOME_DIR_PATH}/storage/{PEER_NAME0}-{ORG_2}
             type: DirectoryOrCreate
         - name: builders-config
           configMap:

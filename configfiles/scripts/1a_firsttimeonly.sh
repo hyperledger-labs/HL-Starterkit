@@ -1,3 +1,4 @@
+#!/bin/bash
 source .c.env
 echo -e $PCOLOR">>> Generating org artifacts"$NONE
 cryptogen generate --config=./crypto-config.yaml

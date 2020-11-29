@@ -21,6 +21,15 @@
       #     src: ./crypto-config.orgsrc.yaml
       #     dest: ./crypto-config.org.yaml
 
+       - name: Check File for 2.0
+         shell: ls -l ./crypto-config_v20.org.yaml
+         register: result20
+         ignore_errors: yes
+       - name: Check File for 1.4x
+         shell: ls -l ./crypto-config.org.yaml
+         register: result14
+         ignore_errors: yes
+
        - name: Registering ORDERER Check
          shell:  cat ../../.hlc.env | grep ORD_NAME4
          register: ordercheck
@@ -34,6 +43,20 @@
            line: "{{ item }}"
          with_items: "{{ nested_list }}"
          when: ordercheck.stdout is search('ORD_NAME4') #!= -1
+         ignore_errors: true
+
+       - name: Adding Orderer names to Crypto-config 2.0  file
+         lineinfile:
+           dest: ./crypto-config_v20.org.yaml
+           insertafter: "{{ find_this }}"
+           firstmatch: yes
+           line: "{{ item }}"
+         with_items: "{{ nested_list }}"
+         ignore_errors: true
+         when: 
+          - ordercheck.stdout is search('ORD_NAME4' or 'ORD_NAME3') #!= -1
+          #- result|success
+
              
        #- name: Adding the Orgs to Docker compose files peer1
        #  lineinfile:

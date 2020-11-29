@@ -8,7 +8,7 @@ function lcpackage20(){
     
     
     if [ $SAMPLE_CC == "ASSETTRANSFER" ]; then 
-    export CC_PATH=/opt/gopath/src/github.com/chaincode/2.0/asset-transfer-basic/chaincode-go/
+    export CC_PATH=/opt/gopath/src/github.com/chaincode/asset-transfer-basic/chaincode-go/
     cd $CC_PATH
     GO111MODULE=on go mod vendor
     go mod tidy
@@ -18,7 +18,7 @@ function lcpackage20(){
 
 
     elif [ $SAMPLE_CC == "SACC" ]; then
-    export CC_PATH=/opt/gopath/src/github.com/chaincode/2.0/sacc/go
+    export CC_PATH=/opt/gopath/src/github.com/chaincode/sacc
     cd $CC_PATH
     GO111MODULE=on go mod vendor
     go mod tidy
@@ -28,7 +28,7 @@ function lcpackage20(){
     
 
     elif [ $SAMPLE_CC == "ABSTORE" ]; then
-    export CC_PATH=/opt/gopath/src/github.com/chaincode/2.0/abstore/go
+    export CC_PATH=/opt/gopath/src/github.com/chaincode/abstore/go
     cd $CC_PATH
     GO111MODULE=on go mod vendor
     go mod tidy
@@ -38,7 +38,7 @@ function lcpackage20(){
   
 
     elif [ $SAMPLE_CC == "ABAC" ]; then
-    export CC_PATH=/opt/gopath/src/github.com/chaincode/2.0/abac/go
+    export CC_PATH=/opt/gopath/src/github.com/chaincode/abac/go
     cd $CC_PATH
     GO111MODULE=on go mod vendor
     go mod tidy
@@ -48,7 +48,7 @@ function lcpackage20(){
    
 
     elif [ $SAMPLE_CC == "FABCAR" ]; then
-    export CC_PATH=/opt/gopath/src/github.com/chaincode/2.0/fabcar/go
+    export CC_PATH=/opt/gopath/src/github.com/chaincode/fabcar/go
     cd $CC_PATH
     GO111MODULE=on go mod vendor
     go mod tidy
@@ -58,7 +58,7 @@ function lcpackage20(){
 
 
     elif [ $SAMPLE_CC == "MARBLES" ]; then
-    export CC_PATH=/opt/gopath/src/github.com/chaincode/2.0/marbles/go
+    export CC_PATH=/opt/gopath/src/github.com/chaincode/marbles02/go
     cd $CC_PATH
     GO111MODULE=on go mod vendor
     go mod tidy

@@ -6,7 +6,7 @@ peer channel join -b mychannel.block
 echo "listing the channel"
 peer channel list
 
-echo " uptdating acnchor"
+echo " uptdating acnchor org1"
 peer channel update -o {ORD_NAME0}:7050 -c mychannel -f ./scripts/channel-artifacts/Org1MSPanchors.tx --tls --cafile $ORDERER_CA
 
 

@@ -46,13 +46,13 @@ function selBCNet() {
              
           ;;
           Explorer)
-             echo "Go to Explorer, 
+             echo "Go to Explorer"
              echo "BCNET=FABEXPLOR" >> .hlc.env
              source $HL_CFG_PATH/.hlc.env
 
              Explorer comes with any of Hyperledger framework, & by now it runs with fabric as default,
                     Run the Fabric Network first and start explorer"
-             echo   "" >> 00_StartCustomHL.sh
+             echo   "" >> 00_StartCustomHL.sh"
              #sed -i -e "s/\.\/08_expstart.sh/""/g" 00_StartCustomHL.sh
              #echo  "./08_expstart.sh" >> 00_StartCustomHL.sh
              if [ $HLENV != "WEB" ];then
@@ -78,7 +78,8 @@ function selBCNet() {
             FbinImage
             echo -e $PCOLOR" Fabric Prerequsties installation completed, Please rerun the script and choose HL BC Network"$NONE
             else echo "Skipping local fabric start and generatiing the configurations..."
-            AskconfEmail
+            source $HL_CFG_PATH/hlstartup/01_networkinfo.sh
+            prereqemail
             exit 1
             fi
             exit 1
@@ -135,6 +136,7 @@ function selvirtcontainer() {
                         echo "CONT=DSWARM" >> .hlc.env
                         export CONT=DSWARM
                         echo " Note : Currently Docker Swarm supports Solo order setup with fabric 1.4"
+                        echo "Ignore errors for not pingble hostnames/Ipaddres"
                         source $HL_CFG_PATH/hlstartup/02_swarmstart.sh
                         swarmStart
                         swarmCopyFiles
@@ -144,25 +146,29 @@ function selvirtcontainer() {
                         swarmhostupdte
                         #dswarmInit
                         swarmscp
-                        
+                        if [ $HLENV != "WEB" ];then
                         swarmDeploy
                         source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
                         chlcreate
                         peernetconnect
+                        else echo ""
+                        fi
                         exit 1
                         break
                     ;;
                     Kubernatees)
                         echo "Go to K8s"
                         echo "CONT=KUBER" >> .hlc.env
+                        
                         export CONT=KUBER
-                        echo " Under Development, Pls user docker swarm or singlehost"
+                        echo "Currently its working on marbles CC as external Container,However im working other chaincodes aswell for the update."
                         source $HL_CFG_PATH/hlstartup/04_Fabsamplecc.sh
-                        selccode                        
+                        #selccode                        
                         if [ $HLENV != WEB ];then
                         ./configfiles/k8s/k8start start
                         else echo "Skipping local fabric start and generatiing the configurations..."
                         source $HL_CFG_PATH/configfiles/k8s/k8s.sh
+                        echo "HMEDIR=" >> .k8s.env
                         k8sORDcheck || true
                         k8sCAcheck || true
                         k8sNS
@@ -170,6 +176,8 @@ function selvirtcontainer() {
                         k8sCPfiles
                         k8sCONFTXCRYPTO
                         k8sSEDreplexe #updating the Values
+                        
+                        AskconfEmail
                         fi
                         
                         exit 1
@@ -327,28 +335,21 @@ function AskconfEmail () {
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
             echo "TOEMLADDRESS=$TOEMLADDRESS"  >> ./configfiles/emailssent
             date >> ./configfiles/emailssent
-            if [ $ORDCOUNT -eq 0 -a $CONT==SINGLE ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml configfiles/web/web-fab-start-single.sh 
-                yes | cp $DOMAIN_NAME.tar.gz /tmp/
-                yes | cp configfiles/emailsend.py emailsend.py
-            elif [ $ORDCOUNT -ge 1 -a $CONT==SINGLE ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml configfiles/web/web-fab-start-single.sh
-                yes | cp $DOMAIN_NAME.tar.gz /tmp/
-                yes | cp configfiles/emailsend.py emailsend.py
-            elif [ $CONT==DSWARM  ]; then
+            cp ./configfiles/web/web-fab-start-single.sh web-fab-start-single.sh
+            if [ "$ORDCOUNT" -eq 0 -a "$CONT" = "SINGLE" ]; then 
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh 
+            elif [ "$ORDCOUNT" -ge 1 -a "$CONT" = "SINGLE" ]; then 
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh
+            elif [ "$CONT" = "SWARM"  ]; then
                 tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
-                yes | cp $DOMAIN_NAME.tar.gz /tmp/
-                yes | cp configfiles/emailsend.py emailsend.py
-            elif [ $CONT==KUBER  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env  Readme.md base scripts configtx.yaml crypto-config.yaml k8s
-                yes | cp $DOMAIN_NAME.tar.gz /tmp/
-                yes | cp configfiles/emailsend.py emailsend.py
+            elif [ "$CONT" = "KUBER"  ]; then
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s
             else
                 echo "Error in Configuration execution"
             fi
+            yes | cp  $DOMAIN_NAME.tar.gz /tmp/
+            yes | cp configfiles/emailsend.py emailsend.py
             python3 emailsend.py
-
-            #./scripts/1a_firsttimeonly.sh
         ;;
         [nN] | [n|N][O|o] )
         echo ".....Skipping ."
@@ -360,6 +361,42 @@ function AskconfEmail () {
 
 } 
 
+
+function prereqemail() {
+    echo -e $BCOLOR"Would you like to generate and send to email address? [y,n]"$NONE
+    read yn
+    cd $HL_CFG_PATH
+    case $yn in
+        [[yY] | [yY][Ee][Ss] )
+            source .hlc.env
+            read -p "Provide your email address( To Address) to send :" TOEMLADDRESS
+            if [ -z $TOEMLADDRESS ];then echo  "No email address given"; read -p "Input your your email address :" TOEMLADDRESS ; else TOEMLADDRESS="$TOEMLADDRESS"; fi;
+            echo $TOEMLADDRESS
+            export TOEMLADDRESS=$TOEMLADDRESS
+            echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
+            echo "TOEMLADDRESS=$TOEMLADDRESS"  >> ./configfiles/emailssent
+            date >> ./configfiles/emailssent
+            if [ $BCNET==FABPREREQ ]; then
+                yes 2>/dev/null | cp hlstartup/01_prereqs.sh 01_prereqs.sh 
+                tar -czf prereq.com.tar.gz 01_prereqs.sh 
+                echo "DOMAIN_NAME=prereq.com" >> .hlc.env
+                yes 2>/dev/null | cp -r prereq.com.tar.gz /tmp/
+                yes 2>/dev/null | cp configfiles/emailsend.py emailsend.py
+                sleep 1
+                python3 emailsend.py
+            else
+                echo "Error in Configuration execution"
+            fi
+
+        ;;
+        [nN] | [n|N][O|o] )
+        echo ".....Skipping ."
+        ;;
+        *) echo "Invalid input"
+        exit 1
+        ;;
+    esac
+}
 
 
 ### Not Deployed

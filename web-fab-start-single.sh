@@ -3,22 +3,17 @@ source .hlc.env
 source .c.env
 
 export `cat .hlc.env | grep IMAGE_TAG`
-
-echo "Ensure at this time you downloaded fabric-samples, binaries and Fabric-images, 
-  If not please download the prereq script and  run "FbinImage" from your home folder."
-
-
-
-cd $HL_CFG_PATH/
-
-cp -r ../asset-transfer* ../chaincode/    ## Copying sample to chaincode folder
+cd fabric_samples
+mkdir hlfab
+cd hlfab
+mkdir channel-artifacts
 
 
 
 function replKeys () {
 
-    source .hlc.env
-    echo "running keys replacements"
+    source $HL_CFG_PATH/.hlc.env
+    
     if [ $HLENV != "WEB" ];then 
     ORG1KEY="$(ls crypto-config/peerOrganizations/$ORG_1.$DOMAIN_NAME/ca/ | grep 'sk$')"
     sed -i -e "s/{ORG1-CA-KEY}/$ORG1KEY/g" ./base/ca-base.yaml
@@ -42,7 +37,6 @@ echo -e $GRCOLOR" `figlet Starting Fabric`"$NONE
 if [ "$ORD_TYPE" == "SOLO"  ]; then
   echo running ./scripts/1a_firsttimeonly.sh
   rm -rf crypto-config
-  mkdir -p channel-artifacts
   ./scripts/1a_firsttimeonly.sh
   replKeys
   echo -e $GRCOLO" Starting with SOLO Orderer "$NONE
@@ -52,9 +46,7 @@ elif [ "$ORD_TYPE" == "RAFT" ]; then
   echo -e $GRCOLO" Starting with RAFT Orderer "$NONE
   echo running ./scripts/1a_firsttimeonly.sh
   rm -rf crypto-config
-  mkdir -p channel-artifacts
   ./scripts/1a_firsttimeonly.sh
-  replKeys
   docker-compose -f docker-compose-cli.yaml -f docker-compose-orderer-etcraft.yaml up -d
   sleep 15 
 else echo ""
@@ -132,5 +124,3 @@ function peernetconnect() {
     fi
     echo ">>>>>  Peerconnect done with two org setup   <<<<< "
 }
-
-peernetconnect

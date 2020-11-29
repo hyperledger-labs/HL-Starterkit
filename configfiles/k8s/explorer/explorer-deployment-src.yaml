@@ -84,17 +84,17 @@ spec:
       volumes:
         - name: configjson-drv1
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/explorer/examples/net1/config.json
+            path: {HOME_DIR_PATH}/explorer/examples/net1/config.json
 
         - name: conn-prof-drv2
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/explorer/examples/net1/connection-profile
+            path: {HOME_DIR_PATH}/explorer/examples/net1/connection-profile
 
         - name: crypto-drv3
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/explorer/examples/net1/crypto
+            path: {HOME_DIR_PATH}/explorer/examples/net1/crypto
 
         - name: wallet-drv4
           hostPath:
-            path: /home/ravi/fabric-samples/HLF_Automation/explorer/wallet
+            path: {HOME_DIR_PATH}/explorer/wallet
 

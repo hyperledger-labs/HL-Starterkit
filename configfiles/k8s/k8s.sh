@@ -2,13 +2,15 @@
 
 source .env
 source ./.hlc.env
+echo > ./.k8s.env
+
 source ./.k8s.env
 
 
 
 function k8sORDcheck  () {
-    if [ $ORDCOUNT -lt 3 ] ; then
-            for ((i=0; i<= 2; i++))   
+    if [ $ORDCOUNT -lt 2 ] ; then
+            for ((i=1; i<= 2; i++))   
             do
                 echo "Since Orderer hosts < 3, Collecting requirements..."
                 read -p "Give your Orderer name(default: Orderer$i) : " ORD_NAME
@@ -107,11 +109,17 @@ function k8sCPfiles() {
     cp org2/org2-cli-deployment-src.yaml ../../k8s/org2/org2-cli-deployment.yaml
     cp org2/org2-peer0-deployment-src.yaml ../../k8s/org2/org2-peer0-deployment.yaml
     cp org2/org2-peer0-svc-src.yaml ../../k8s/org2/org2-peer0-svc.yaml
+    if [ $HLENV != WEB ];then
     rsync -a k8scripts ../../k8s/
     rsync -a buildpack ../../k8s/
     rsync -a chaincode ../../k8s/
     rsync -a explorer ../../k8s/
-
+    else 
+    cp -r k8scripts ../../k8s/
+    cp -r buildpack ../../k8s/
+    cp -r chaincode ../../k8s/
+    cp -r explorer ../../k8s/
+    fi
 
 }
 
@@ -144,6 +152,7 @@ function k8sSEDrepl () {
         sed -i -e "s/{ORD_NAME1}/$ORD_NAME1/g" $file
         sed -i -e "s/{ORD_NAME2}/$ORD_NAME2/g" $file
         sed -i -e "s/{CHANNEL_NAME1}/$CHANNEL_NAME1/g" $file
+        
     done
 }
 
@@ -172,6 +181,8 @@ function k8sSEDreplexe () {
     cd $HL_CFG_PATH/k8s/orderer-service
     k8sSEDrepl
     cd $HL_CFG_PATH/k8s/chaincode/k8s/
+    k8sSEDrepl
+    cd $HL_CFG_PATH/k8s/chaincode/packaging/
     k8sSEDrepl
     cd $HL_CFG_PATH/k8s/k8scripts/
     k8sSEDrepl
@@ -219,7 +230,7 @@ function k8sjoinCHL() {
 function k8sbuildCC {
 
     cd $HL_CFG_PATH/k8s/chaincode/packaging
-    k8sSEDrepl
+    #k8sSEDrepl
     cp org1.connection.json connection.json
     rm -f code.tar.gz
     tar cfz code.tar.gz connection.json
@@ -271,7 +282,10 @@ function k8sCCstart() {
     kubectl get pods -n $K8S_NS
     sleep 15
     kubectl exec -it -n $K8S_NS $CLI_ORG1 -- bash -c "k8scripts/04_invoke.sh"
+    echo " Switching to org2"
+    kubectl exec -it -n $K8S_NS $CLI_ORG2 -- bash -c "k8scripts/05_query.sh"
     kubectl get pods -n $K8S_NS
+    echo -e $GCOLOR"You have done, Great job."$NONE
 
 }
 
@@ -318,3 +332,15 @@ function k8Status () {
 }
 
 
+function k8shomedir () {
+    echo -e $BCOLOR"If you not aware, you can skip for now"$NONE
+    read -p "Provide your working dir PATH. It should be FULLPATH :" hmedir
+    
+
+    for file in k8s/*; 
+    do 
+    echo "$file"
+    sed -i -e "s/{HOME_DIR_PATH}/$hmedir/g" $file
+    done
+
+}
