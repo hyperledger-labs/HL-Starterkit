@@ -1,0 +1,53 @@
+OrdererOrgs:
+  - Name: {ORD_NAME0_C}
+    Domain: {DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {ORD_NAME0}
+PeerOrgs:
+  - Name: {ORG_1_C}
+    Domain: {ORG_1}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+      - Hostname: {PEER_NAME1}
+      - Hostname: {PEER_NAME2}
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+  
+  - Name: {ORG_2_C}
+    Domain: {ORG_2}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: {PEER_NAME0}
+      - Hostname: {PEER_NAME1}
+      - Hostname: {PEER_NAME2}
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+  
+  - Name: {ORG_3_C}
+    Domain: {ORG_3}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Template:
+      Count: {PCOUNT}
+    Users:
+      Count: 1
+  - Name: {ORG_4_C}
+    Domain: {ORG_4}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Template:
+      Count: {PCOUNT}
+    Users:
+      Count: 1
+  - Name: {ORG_5_C}
+    Domain: {ORG_5}.{DOMAIN_NAME}
+    EnableNodeOUs: true
+    Template:
+      Count: {PCOUNT}
+    Users:
+      Count: 1
+

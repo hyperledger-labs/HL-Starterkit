@@ -1,0 +1,52 @@
+--- #---------------- CA org2 Deployment ---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {CA_ORG2}-{ORG_2}
+  name: {CA_ORG2}-{ORG_2}
+  namespace: {K8S_NS}
+spec:
+  selector:
+    matchLabels:
+      app: {CA_ORG2}-{ORG_2}
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {CA_ORG2}-{ORG_2}
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.{ORG_2}-cert.pem
+              --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY}
+              -b admin:adminpw -d
+          env:
+            - name: FABRIC_CA_HOME
+              value: /etc/hyperledger/fabric-ca-server
+            - name: FABRIC_CA_SERVER_CA_NAME
+              value: {CA_ORG2}-{ORG_2}
+            - name: FABRIC_CA_SERVER_TLS_CERTFILE
+              value: /etc/hyperledger/fabric-ca-server-config/ca.{ORG_2}-cert.pem
+            - name: FABRIC_CA_SERVER_TLS_ENABLED
+              value: "true"
+            - name: FABRIC_CA_SERVER_TLS_KEYFILE
+              value: /etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY}
+          image: hyperledger/fabric-ca:{CAIMAGE_TAG}
+          name: {CA_ORG2}-{ORG_2}
+          ports:
+            - containerPort: 7054
+          volumeMounts:
+            - mountPath: /etc/hyperledger/fabric-ca-server-config
+              name: {CA_ORG2}-{ORG_2}-drv0
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: {CA_ORG2}-{ORG_2}-drv0
+          hostPath:
+            path: {HOME_DIR_PATH}/crypto-config/peerOrganizations/{ORG_2}/ca/
+            type: Directory
