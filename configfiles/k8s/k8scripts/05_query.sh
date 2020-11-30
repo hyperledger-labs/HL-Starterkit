@@ -1,8 +1,12 @@
 echo  "  initiating ......"
 
+source .hlc.env
+if [ -z $SAMPLE_CC ] ; then
 export CC_LABLNAME="${SAMPLE_CC,,}"
 echo $CC_LABLNAME
-
+else
+export CC_LABLNAME="marbles"
+fi
 export PEER_CONN_PARMS="--peerAddresses {PEER_NAME0}-{ORG_1}:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}/peers/{PEER_NAME0}-{ORG_1}/tls/ca.crt"
 export PEER_CONN_PARMS1="--peerAddresses {PEER_NAME0}-{ORG_2}:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_2}/peers/{PEER_NAME0}-{ORG_2}/tls/ca.crt"
 sleep 5

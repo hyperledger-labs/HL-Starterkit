@@ -86,7 +86,8 @@ function verifyDir() {
 
 function k8sCPfiles() {
     echo "changing to source dir.."
-    cd $HL_CFG_PATH/configfiles/k8s
+    cd $HL_CFG_PATH/configfiles/k8s 
+    sleep 2
 
     cp orderer-service/orderer0-deployment-src.yaml ../../k8s/orderer-service/orderer0-deployment.yaml
     cp orderer-service/orderer0-svc-src.yaml ../../k8s/orderer-service/orderer0-svc.yaml
@@ -113,12 +114,12 @@ function k8sCPfiles() {
     rsync -a k8scripts ../../k8s/
     rsync -a buildpack ../../k8s/
     rsync -a chaincode ../../k8s/
-    rsync -a explorer ../../k8s/
+    rsync -a explorer ../../k8s/k8sexplorer
     else 
     cp -r k8scripts ../../k8s/
     cp -r buildpack ../../k8s/
     cp -r chaincode ../../k8s/
-    cp -r explorer ../../k8s/
+    cp -r explorer ../../k8s/k8sexplorer
     fi
 
 }
@@ -291,18 +292,24 @@ function k8sCCstart() {
 
 
 function k8sexplorer() {
-    cp configfiles/k8s/explorer/first-network-org.json  $HL_CFG_PATH/k8s/explorer
-    
-    cd $HL_CFG_PATH/k8s/explorer
+    cp configfiles/k8s/explorer/first-network-org.json  $HL_CFG_PATH/k8s/k8sexplorer/
+    cp configfiles/k8s/explorer/explorer-deployment-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorer-deployment.yaml
+    cp configfiles/k8s/explorer/explorer-svc-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorer-svc.yaml
+    cp configfiles/k8s/explorer/explorerdb-deployment-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorerdb-deployment.yaml
+    cp configfiles/k8s/explorer/explorerdb-svc-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorerdb-svc.yaml
+
+    cd $HL_CFG_PATH/k8s/k8sexplorer
     k8sSEDrepl
+    mkdir -p $HL_CFG_PATH/explorer/examples/net1/connection-profile
     cp first-network-org.json  $HL_CFG_PATH/explorer/examples/net1/connection-profile/.
     mv first-network-org.json  $HL_CFG_PATH/k8s/
     cd $HL_CFG_PATH
-    
+    if [ $HLENV != WEB ];then
     cp -r crypto-config/*  explorer/examples/net1/crypto/
     kubectl create -f k8s/explorer/
     sleep 10 && kubectl get pods -n $K8S_NS
-    
+    else echo ""
+    fi
 }
 
 
