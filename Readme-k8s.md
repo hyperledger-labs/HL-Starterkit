@@ -11,7 +11,7 @@ echo -e $YCOLOR" As prerequestie for K8s, Mount current working dir to k8s clust
  Note: change your working directory PATH from above syntax"$NONE
 echo " For fabric version 1.4.x, you need to update priv.key manually when there is a change"
 echo ""
-#echo "I also provided a option to run script for update your working dir along with this script"
+#echo "Currently marbles CC is available for test, and im working on fabcar"
 echo -e $PCOLOR "As prerequestie for K8s, Mount current working dir to k8s cluster" $NONE
 echo  " Execute with below commands in sequence"
 echo -e $GRCOLOR "ex :  \n CleanCreateCrypto \n replKeys \n k8sDeployPOD  \n k8sjoinCHL \n k8sbuildCC \n k8sCCinstall \n k8sCCstart " $NONE
@@ -164,6 +164,12 @@ function k8sstop() {
 
 }
 
+function k8sexplr() {
+
+    cp -r crypto-config/*  explorer/examples/net1/crypto/
+    kubectl create -f k8s/explorer/
+    sleep 10 && kubectl get pods -n $K8S_NS
+}
 
 echo -e $YCOLOR"You can ctrl^C now if you already generated and updated homedir path."$NONE
 k8shomedir

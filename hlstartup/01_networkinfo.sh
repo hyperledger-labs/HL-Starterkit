@@ -169,6 +169,7 @@ function selvirtcontainer() {
                         else echo "Skipping local fabric start and generatiing the configurations..."
                         source $HL_CFG_PATH/configfiles/k8s/k8s.sh
                         echo "HMEDIR=" >> .k8s.env
+
                         k8sORDcheck || true
                         k8sCAcheck || true
                         k8sNS
@@ -176,6 +177,9 @@ function selvirtcontainer() {
                         k8sCPfiles
                         k8sCONFTXCRYPTO
                         k8sSEDreplexe #updating the Values
+                        cd $HL_CFG_PATH/
+                        k8sexplorer
+                        cp $HL_CFG_PATH/.*.env k8s/k8scripts/
                         
                         AskconfEmail
                         fi
@@ -331,6 +335,8 @@ function AskconfEmail () {
             read -p "Provide your email address( To Address) to send :" TOEMLADDRESS
             if [ -z $TOEMLADDRESS ];then echo  "No email address given"; read -p "Input your your email address :" TOEMLADDRESS ; else TOEMLADDRESS="$TOEMLADDRESS"; fi;
             echo $TOEMLADDRESS
+            pwd
+
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
             echo "TOEMLADDRESS=$TOEMLADDRESS"  >> ./configfiles/emailssent
@@ -343,7 +349,7 @@ function AskconfEmail () {
             elif [ "$CONT" = "SWARM"  ]; then
                 tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
             elif [ "$CONT" = "KUBER"  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s explorer
             else
                 echo "Error in Configuration execution"
             fi
