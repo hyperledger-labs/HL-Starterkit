@@ -1,0 +1,16 @@
+#---------------- CA OE1 Service ---------------
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {CA_ORG1}-{ORG_1}
+  name: {CA_ORG1}-{ORG_1}
+  namespace: {K8S_NS}
+spec:
+  type: ClusterIP
+  ports:
+  - name: "https"
+    port: 7054
+    targetPort: 7054
+  selector:
+    app: {CA_ORG1}-{ORG_1}

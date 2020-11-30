@@ -1,0 +1,85 @@
+--- #---------------- CLI Deployment ---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cli-{ORG_1}
+  name: cli-{ORG_1}
+  namespace: {K8S_NS}
+spec:
+  selector:
+    matchLabels:
+      app: cli-{ORG_1}
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cli-{ORG_1}
+    spec:
+      containers:
+        - env:
+            - name: FABRIC_LOGGING_SPEC
+              value: INFO
+            - name: CORE_PEER_ADDRESS
+              value: {PEER_NAME0}-{ORG_1}:7051
+            - name: CORE_PEER_ID
+              value: cli-{ORG_1}
+            - name: CORE_PEER_LOCALMSPID
+              value: {ORG_1_C}MSP
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}/users/Admin@{ORG_1}/msp
+            - name: CORE_PEER_TLS_CERT_FILE
+              value: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}/peers/{PEER_NAME0}-{ORG_1}/tls/server.crt
+            - name: CORE_PEER_TLS_ENABLED
+              value: "true"
+            - name: CORE_PEER_TLS_KEY_FILE
+              value: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}/peers/{PEER_NAME0}-{ORG_1}/tls/server.key
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}/peers/{PEER_NAME0}-{ORG_1}/tls/ca.crt
+            - name: GOPATH
+              value: /opt/gopath
+            - name: ORDERER_CA
+              value: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}/msp/tlscacerts/tlsca.{DOMAIN_NAME}-cert.pem
+          image: hyperledger/fabric-tools:{IMAGE_TAG}
+          name: cli
+          tty: true
+          volumeMounts:
+            # - mountPath: /host/var/run/
+            #   name: cli-drv0
+            - mountPath: /opt/gopath/src/github.com/marbles/
+              name: cli-drv1
+            - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/channel-artifacts
+              name: cli-drv2
+            - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+              name: cli-drv3
+            - mountPath: /opt/gopath/src/github.com/fabcar/
+              name: cli-fabcar
+            - mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/k8scripts
+              name: cli-custom
+          workingDir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+      restartPolicy: Always
+      volumes:
+        # - name: cli-drv0
+        #   hostPath:
+        #     path: /var/run/
+        #     type: Directory
+        - name: cli-drv1
+          hostPath:
+            path: {HOME_DIR_PATH}/k8s/chaincode
+            type: Directory
+        - name: cli-drv2
+          hostPath:
+            path: {HOME_DIR_PATH}/channel-artifacts
+            type: Directory
+        - name: cli-drv3
+          hostPath:
+            path: {HOME_DIR_PATH}/crypto-config
+            type: Directory
+        - name: cli-fabcar
+          hostPath:
+            path: {HOME_DIR_PATH}/k8s/fabcar
+        - name: cli-custom
+          hostPath:
+            path: {HOME_DIR_PATH}/k8s/k8scripts
