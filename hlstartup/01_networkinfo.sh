@@ -335,7 +335,6 @@ function AskconfEmail () {
             read -p "Provide your email address( To Address) to send :" TOEMLADDRESS
             if [ -z $TOEMLADDRESS ];then echo  "No email address given"; read -p "Input your your email address :" TOEMLADDRESS ; else TOEMLADDRESS="$TOEMLADDRESS"; fi;
             echo $TOEMLADDRESS
-            pwd
 
             export TOEMLADDRESS=$TOEMLADDRESS
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env

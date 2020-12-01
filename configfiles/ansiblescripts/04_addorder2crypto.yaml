@@ -42,7 +42,7 @@
            firstmatch: yes
            line: "{{ item }}"
          with_items: "{{ nested_list }}"
-         when: ordercheck.stdout is search('ORD_NAME4') #!= -1
+         when: ordercheck.stdout is search('ORD_NAME4' or 'ORD_NAME2') #!= -1
          ignore_errors: true
 
        - name: Adding Orderer names to Crypto-config 2.0  file
