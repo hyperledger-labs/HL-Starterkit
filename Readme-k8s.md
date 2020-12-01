@@ -167,7 +167,7 @@ function k8sstop() {
 function k8sexplr() {
 
     cp -r crypto-config/*  explorer/examples/net1/crypto/
-    kubectl create -f k8s/explorer/
+    kubectl create -f k8s/k8sexplorer/
     sleep 10 && kubectl get pods -n $K8S_NS
 }
 

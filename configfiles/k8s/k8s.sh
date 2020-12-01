@@ -133,7 +133,7 @@ function k8sSEDrepl () {
         if [[ ! -f "$file" ]];   then    
          continue     
         fi
-        echo "$file"   
+        #echo "$file"   
         sed -i -e "s/{DOMAIN_NAME}/$DOMAIN_NAME/g" $file  
         sed -i -e "s/{K8S_NS}/$K8S_NS/g" $file
         sed -i -e "s/{ORG_1}/$ORG_1/g" $file
@@ -293,6 +293,7 @@ function k8sCCstart() {
 
 function k8sexplorer() {
     cp configfiles/k8s/explorer/first-network-org.json  $HL_CFG_PATH/k8s/k8sexplorer/
+    cp configfiles/k8s/explorer/config.json  $HL_CFG_PATH/k8s/k8sexplorer/
     cp configfiles/k8s/explorer/explorer-deployment-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorer-deployment.yaml
     cp configfiles/k8s/explorer/explorer-svc-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorer-svc.yaml
     cp configfiles/k8s/explorer/explorerdb-deployment-src.yaml  $HL_CFG_PATH/k8s/k8sexplorer/explorerdb-deployment.yaml
@@ -301,12 +302,13 @@ function k8sexplorer() {
     cd $HL_CFG_PATH/k8s/k8sexplorer
     k8sSEDrepl
     mkdir -p $HL_CFG_PATH/explorer/examples/net1/connection-profile
-    cp first-network-org.json  $HL_CFG_PATH/explorer/examples/net1/connection-profile/.
+    cp first-network-org.json  $HL_CFG_PATH/explorer/examples/net1/connection-profile/
+    cp config.json $HL_CFG_PATH/explorer/examples/net1/
     mv first-network-org.json  $HL_CFG_PATH/k8s/
     cd $HL_CFG_PATH
     if [ $HLENV != WEB ];then
     cp -r crypto-config/*  explorer/examples/net1/crypto/
-    kubectl create -f k8s/explorer/
+    kubectl create -f k8s/k8sexplorer/
     sleep 10 && kubectl get pods -n $K8S_NS
     else echo ""
     fi

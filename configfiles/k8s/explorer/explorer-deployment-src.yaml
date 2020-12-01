@@ -26,9 +26,9 @@ spec:
             #- node
             #- /opt/explorer/main.js 
             #- tail -f /dev/null
-            #- sh
-            #- -c
-            #- sleep 16&& node /opt/explorer/main.js && tail -f /dev/null
+            - sh
+            - -c
+            - sleep 16&& node /opt/explorer/main.js && tail -f /dev/null
             #- /opt/explorer/main.js
           #command: ["sh" , "-c" , "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"]
           name: hlexplorer

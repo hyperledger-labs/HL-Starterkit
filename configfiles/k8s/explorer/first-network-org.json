@@ -47,7 +47,7 @@
 			},
 			"certificateAuthorities": ["{CA_ORG1}-{ORG_1}"],
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/ca/ca.{ORG_1}-cert.pem"
+				"path": "/tmp/crypto/peerOrganizations/{ORG_1}/ca/ca.{ORG_1}-cert.pem"
 			}
 		}
 	},
@@ -60,6 +60,16 @@
 			"eventUrl": "grpcs://{PEER_NAME0}-{ORG_1}:7053",
 			"grpcOptions": {
 				"ssl-target-name-override": "{PEER_NAME0}-{ORG_1}"
+			}
+		},
+		"{PEER_NAME0}-{ORG_2}": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/{ORG_2}/peers/{PEER_NAME0}-{ORG_2}/tls/ca.crt"
+			},
+			"url": "grpcs://{PEER_NAME0}-{ORG_2}:7051",
+			"eventUrl": "grpcs://{PEER_NAME0}-{ORG_2}:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "{PEER_NAME0}-{ORG_2}"
 			}
 		}
 	}
