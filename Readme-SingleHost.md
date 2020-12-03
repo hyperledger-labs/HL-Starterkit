@@ -11,7 +11,7 @@ Once it extracted, you have file name called  `web-fab-start-single.sh`
 ensure the file 755 permissions if not please do run `sudo chmod 755 web-fab-start-single.sh`
 
 Now you run the file 
-`./web-fab-start-single.sh`
+`source web-fab-start-single.sh`
 
 
 

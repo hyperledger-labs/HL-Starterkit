@@ -126,8 +126,12 @@ function selvirtcontainer() {
                         echo "Skipping local fabric start and generatiing the configurations..."
                         source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
                         cd $HL_CFG_PATH/scripts
-                        
                         SEDpeernetconnect #updating the Values
+                        source $HL_CFG_PATH/hlstartup/08_expstart.sh
+                        explorerConfig
+                        startexplore
+                        
+
                         fi
                         break
                     ;;
@@ -342,11 +346,11 @@ function AskconfEmail () {
             date >> ./configfiles/emailssent
             cp ./configfiles/web/web-fab-start-single.sh web-fab-start-single.sh
             if [ "$ORDCOUNT" -eq 0 -a "$CONT" = "SINGLE" ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh 
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh explorer
             elif [ "$ORDCOUNT" -ge 1 -a "$CONT" = "SINGLE" ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh explorer
             elif [ "$CONT" = "SWARM"  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env explorer
             elif [ "$CONT" = "KUBER"  ]; then
                 tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s explorer
             else

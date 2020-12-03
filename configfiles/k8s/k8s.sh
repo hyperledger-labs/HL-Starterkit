@@ -319,6 +319,7 @@ function k8sexplorer() {
     mv first-network-org.json  $HL_CFG_PATH/k8s/
     cd $HL_CFG_PATH
     if [ $HLENV != WEB ];then
+    mkdir -p explorer/examples/net1/crypto
     cp -r crypto-config/*  explorer/examples/net1/crypto/
     kubectl create -f k8s/k8sexplorer/
     sleep 10 && kubectl get pods -n $K8S_NS
