@@ -190,12 +190,23 @@ function k8sSEDreplexe () {
 
 }
 
-function CleanCreateCrypto () {
+function k8sCleanCreateCrypto () {
     cd $HL_CFG_PATH
     rm -rf crypto-config
     ./scripts/1a_firsttimeonly.sh
 }
 
+
+function k8sreplKeys () {
+    source $HL_CFG_PATH/.hlc.env
+    source $HL_CFG_PATH/.k8s.env
+    
+    ORG1KEY="$(ls crypto-config/peerOrganizations/$ORG_1/ca/ | grep 'sk$')"
+    sed -i -e "s/{ORG1-CA-KEY}/$ORG1KEY/g" ./k8s/org1/org1-ca-deployment.yaml 
+
+    ORG2KEY="$(ls crypto-config/peerOrganizations/$ORG_2/ca/ | grep 'sk$')"
+    sed -i -e "s/{ORG2-CA-KEY}/$ORG2KEY/g" ./k8s/org2/org2-ca-deployment.yaml 
+}
 
 
 
@@ -302,8 +313,9 @@ function k8sexplorer() {
     cd $HL_CFG_PATH/k8s/k8sexplorer
     k8sSEDrepl
     mkdir -p $HL_CFG_PATH/explorer/examples/net1/connection-profile
+
     cp first-network-org.json  $HL_CFG_PATH/explorer/examples/net1/connection-profile/
-    cp config.json $HL_CFG_PATH/explorer/examples/net1/
+    mv config.json $HL_CFG_PATH/explorer/examples/net1/
     mv first-network-org.json  $HL_CFG_PATH/k8s/
     cd $HL_CFG_PATH
     if [ $HLENV != WEB ];then

@@ -14,7 +14,7 @@ echo ""
 #echo "Currently marbles CC is available for test, and im working on fabcar"
 echo -e $PCOLOR "As prerequestie for K8s, Mount current working dir to k8s cluster" $NONE
 echo  " Execute with below commands in sequence"
-echo -e $GRCOLOR "ex :  \n CleanCreateCrypto \n replKeys \n k8sDeployPOD  \n k8sjoinCHL \n k8sbuildCC \n k8sCCinstall \n k8sCCstart " $NONE
+echo -e $GRCOLOR "ex :  \n k8sCleanCreateCrypto \n k8sreplKeys \n k8sDeployPOD  \n k8sjoinCHL \n k8sbuildCC \n k8sCCinstall \n k8sCCstart " $NONE
 
 
 function k8shomedir () {
@@ -35,7 +35,7 @@ function k8shomedir () {
 }
 
 
-function CleanCreateCrypto () {
+function k8sCleanCreateCrypto () {
     cd $HL_CFG_PATH
     rm -rf crypto-config
     ./scripts/1a_firsttimeonly.sh
@@ -44,7 +44,7 @@ function CleanCreateCrypto () {
 
 
 
-function replKeys () {
+function k8sreplKeys () {
 
     source $HL_CFG_PATH/.hlc.env
     source $HL_CFG_PATH/.k8s.env
