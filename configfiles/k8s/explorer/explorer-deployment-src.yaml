@@ -60,13 +60,6 @@ spec:
               value: 0.0.0.0:9443
             - name: CORE_METRICS_PROVIDER
               value: prometheus
-          readinessProbe:
-            httpGet:
-              host: hlexplorer-db
-              port: 5432
-            initialDelaySeconds: 20
-            periodSeconds: 5
-            successThreshold: 2 
           ports:
             - containerPort: 8080
             - containerPort: 9443

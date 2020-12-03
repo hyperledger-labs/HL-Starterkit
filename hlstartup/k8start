@@ -34,7 +34,7 @@ case $COMMAND in
         k8sCPfiles
         k8sCONFTXCRYPTO
         k8sSEDreplexe
-        CleanCreateCrypto
+        k8sCleanCreateCrypto
         sleep 1
         echo "Deploying k8s pod's..."
         sleep 10
