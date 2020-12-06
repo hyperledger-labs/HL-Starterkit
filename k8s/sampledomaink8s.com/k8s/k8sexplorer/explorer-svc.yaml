@@ -1,0 +1,36 @@
+--- #---------------- Peer0 Org1 Service ---------------
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hlexplorer
+  name: hlexplorer
+  namespace: hlf
+spec:
+  type: NodePort
+  ports:
+  - name: "explorer-core"
+    nodePort: 31313
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: hlexplorer
+---
+#---------------- Peer0 Org1 Metrics Service ---------------
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hlexplorer
+    metrics-service: "true"
+  name: hlexplorer-metrics
+  namespace: hlf
+spec:
+  type: ClusterIP
+  ports:
+  - name: "explorer-metrics"
+    port: 9443
+    targetPort: 9443
+  selector:
+    app: hlexplorer

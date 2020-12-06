@@ -1,0 +1,77 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer1.singledomain.com:
+  orderer2.singledomain.com:
+  .singledomain.com:
+  .singledomain.com:
+
+networks:
+  hlfnet:
+
+services:
+
+  orderer1.singledomain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer1.singledomain.com
+    networks:
+    - hlfnet
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/orderer1.singledomain.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/orderer1.singledomain.com/tls/:/var/hyperledger/orderer/tls
+        - orderer1.singledomain.com:/var/hyperledger/production/orderer
+    ports:
+    - 8050:7050
+
+  orderer2.singledomain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer2.singledomain.com
+    networks:
+    - hlfnet
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/orderer2.singledomain.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/orderer2.singledomain.com/tls/:/var/hyperledger/orderer/tls
+        - orderer2.singledomain.com:/var/hyperledger/production/orderer
+    ports:
+    - 9050:7050
+
+  .singledomain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: .singledomain.com
+    networks:
+    - hlfnet
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/.singledomain.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/.singledomain.com/tls/:/var/hyperledger/orderer/tls
+        - .singledomain.com:/var/hyperledger/production/orderer
+    ports:
+    - 10050:7050
+
+  .singledomain.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: .singledomain.com
+    networks:
+    - hlfnet
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/.singledomain.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/singledomain.com/orderers/.singledomain.com/tls/:/var/hyperledger/orderer/tls
+        - .singledomain.com:/var/hyperledger/production/orderer
+    ports:
+    - 11050:7050

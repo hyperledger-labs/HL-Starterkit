@@ -1,0 +1,76 @@
+{
+	"name": "first-network",
+	"version": "1.0.0",
+	"client": {
+		"tlsEnable": true,
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw"
+		},
+		"enableAuthentication": false,
+		"organization": "Myorg1MSP",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"mychannel": {
+			"peers": {
+				"peer0-myorg1": {}
+			},
+			"connection": {
+				"timeout": {
+					"peer": {
+						"endorser": "6000",
+						"eventHub": "6000",
+						"eventReg": "6000"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"Myorg1MSP": {
+			"mspid": "Myorg1MSP",
+			"fullpath": true,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/myorg1/users/Admin@myorg1/msp/keystore/priv_sk"
+			},
+			"peers": ["peer0-myorg1"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/myorg1/users/Admin@myorg1/msp/signcerts/Admin@myorg1-cert.pem"
+			},
+			"certificateAuthorities": ["ca1-myorg1"],
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/myorg1/ca/ca.myorg1-cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"peer0-myorg1": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/myorg1/peers/peer0-myorg1/tls/ca.crt"
+			},
+			"url": "grpcs://peer0-myorg1:7051",
+			"eventUrl": "grpcs://peer0-myorg1:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "peer0-myorg1"
+			}
+		},
+		"peer0-myorg2": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/myorg2/peers/peer0-myorg2/tls/ca.crt"
+			},
+			"url": "grpcs://peer0-myorg2:7051",
+			"eventUrl": "grpcs://peer0-myorg2:7053",
+			"grpcOptions": {
+				"ssl-target-name-override": "peer0-myorg2"
+			}
+		}
+	}
+}
