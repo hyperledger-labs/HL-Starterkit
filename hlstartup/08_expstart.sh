@@ -8,6 +8,9 @@ source .hlc.env
 export COMPOSE_PROJECT_NAME=automation
 ##############  Explorer Config ###############
 function explorerConfig() {
+    mkdir -p ./explorer/examples/net1/crypto
+    mkdir -p ./explorer/examples/net1/connection-profile
+
     cp ./configfiles/explorer/docker-compose-explorer-org.yml ./explorer/docker-compose-explorer.yml
     cp ./configfiles/explorer/first-network-org.json  ./explorer/examples/net1/connection-profile/first-network.json
     cp ./configfiles/explorer/config-org.json  ./explorer/examples/net1/config.json
@@ -30,7 +33,7 @@ function explorerConfig() {
 
 function startexplore() { 
     
-    mkdir -p ./explorer/examples/net1/crypto
+    
     if [ $HLENV != "WEB" ];then
     echo -e $GRCOLOR" `figlet starting explorer`"$NONE
     rm -rf ./explorer/examples/net1/crypto/*

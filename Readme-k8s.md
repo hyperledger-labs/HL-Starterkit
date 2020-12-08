@@ -1,3 +1,21 @@
+###############################################
+Please run this below
+
+$ source Readme-k8s.md
+###############################################
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################################
 source .env
 source .hlc.env
 source .c.env
@@ -12,9 +30,29 @@ echo -e $YCOLOR" As prerequestie for K8s, Mount current working dir to k8s clust
 echo " For fabric version 1.4.x, you need to update priv.key manually when there is a change"
 echo ""
 #echo "Currently marbles CC is available for test, and im working on fabcar"
-echo -e $PCOLOR "As prerequestie for K8s, Mount current working dir to k8s cluster" $NONE
+echo -e $PCOLOR "Important : As a prerequestie for K8s, Mount current working directory to k8s cluster" $NONE
 echo  " Execute with below commands in sequence"
 echo -e $GRCOLOR "ex :  \n k8sCleanCreateCrypto \n k8sreplKeys \n k8sDeployPOD  \n k8sjoinCHL \n k8sbuildCC \n k8sCCinstall \n k8sCCstart " $NONE
+
+function checkDIRpath () {
+    P=$PWD
+    if [[ $P =~ "fabric-samples" ]] ; then 
+    echo "Found fabric-samples folder from your current path \n
+    Checking prereq status "
+    source 01_prereqs.sh
+    precheck
+    echo "If any of prereq's are NULL value"
+    echo "Please run prereq scripts in following order or you can do manuall install for missing component."
+    echo -e $GRCOLOR "ex : source 01_prereqs.sh \n prereq14 \n precheck \n   " $NONE
+    else 
+    echo "fabric-samples folder not found"
+    echo " Please run prereq scripts in following order"
+    echo -e $GRCOLOR "ex :  source 01_prereqs.sh \n prereq14 \n FbinImage \n precheck \n " $NONE
+    
+    fi; 
+}
+
+
 
 
 function k8shomedir () {
@@ -171,5 +209,9 @@ function k8sexplr() {
     sleep 10 && kubectl get pods -n $K8S_NS
 }
 
+
+checkDIRpath
+
+sleep 2
 echo -e $YCOLOR"You can ctrl^C now if you already generated and updated homedir path."$NONE
 k8shomedir

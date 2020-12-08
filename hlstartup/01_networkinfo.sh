@@ -128,6 +128,7 @@ function selvirtcontainer() {
                         cd $HL_CFG_PATH/scripts
                         SEDpeernetconnect #updating the Values
                         source $HL_CFG_PATH/hlstartup/08_expstart.sh
+                        cd $HL_CFG_PATH/
                         explorerConfig
                         startexplore
                         
@@ -344,15 +345,16 @@ function AskconfEmail () {
             echo "TOEMLADDRESS=$TOEMLADDRESS" >> .hlc.env
             echo "TOEMLADDRESS=$TOEMLADDRESS"  >> ./configfiles/emailssent
             date >> ./configfiles/emailssent
+            yes 2>/dev/null | cp hlstartup/01_prereqs.sh 01_prereqs.sh
             cp ./configfiles/web/web-fab-start-single.sh web-fab-start-single.sh
             if [ "$ORDCOUNT" -eq 0 -a "$CONT" = "SINGLE" ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh explorer
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh explorer 01_prereqs.sh
             elif [ "$ORDCOUNT" -ge 1 -a "$CONT" = "SINGLE" ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh explorer
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh explorer 01_prereqs.sh
             elif [ "$CONT" = "SWARM"  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env explorer
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env explorer 01_prereqs.sh
             elif [ "$CONT" = "KUBER"  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s explorer
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s explorer 01_prereqs.sh
             else
                 echo "Error in Configuration execution"
             fi

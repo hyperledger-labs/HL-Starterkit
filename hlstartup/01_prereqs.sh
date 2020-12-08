@@ -20,6 +20,10 @@ echo "## Optional, only you know the images to dowload. Update the Env variables
 echo "FbinImage"   
 echo "for Ex : DBIMAGE_TAG=0.4.18 CAIMAGE_TAG=1.4.7 IMAGE_TAG=1.4.7"
 
+
+
+
+
 function prereq14 {
     ### export environment variables for current shell.
     #export GOPATH=$HOME/go
@@ -65,7 +69,7 @@ function prereq14 {
 function precheck () {
     ####  Print installation details for user
     echo ''
-    echo -e $LBCOLOR'Installation completed, versions installed are:'$NONE
+    echo -e $LBCOLOR'Prereq/Installation completed, versions found/installed are:'$NONE
     echo ''
     echo -e $GRCOLOR "Node:             `node --version`"
     echo -e $GRCOLOR "NPM:              `npm --version`"
@@ -75,7 +79,8 @@ function precheck () {
     $NONE 
     echo 
     echo
-    echo -e $RCOLOR" Logout/login back for the changes to take effect."$NONE
+    echo -e $RCOLOR" Logout/login back for the changes to take effect. You can ignore if you already handled"$NONE
+    echo
 
 
 }
@@ -83,8 +88,6 @@ function precheck () {
 
 
 function FbinImage () {
-
- 
     source .hlc.env
     export `cat $HL_CFG_PATH/.hlc.env | grep IMAGE_TAG`
     curl -sSL http://bit.ly/2ysbOFE | bash -s -- $IMAGE_TAG $CAIMAGE_TAG $DBIMAGE_TAG
@@ -95,13 +98,5 @@ function FbinImage () {
         docker tag hyperledger/fabric-couchdb:0.4.15 couchdb:0.4.15; 
     else echo "error in imaging"; 
     fi
-
-    # source $HL_CFG_PATH/hlstartup/01_networkinfo.sh
-    # HLFver
-    #For latest version  of link
-    #curl -sSL   https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s
-    #### if you need to download specific version follow below syntax
-    #curl -sSL http://bit.ly/2ysbOFE | bash -s -- <fabric_version> <fabric-ca_version> <thirdparty_version>
-
-
 }
+
