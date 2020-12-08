@@ -370,6 +370,7 @@ function checkORG3() {
         raftadd
         cd ../../
         cp ./configfiles/ansiblescripts/configtx_v14.org.yaml ./configtx.yaml
+        cp ./configfiles/ansiblescripts/crypto-config.org.yaml ./crypto-config.yaml
         cp ./configfiles/base/docker-compose-base-org.yaml ./base/docker-compose-base.yaml
         cp ./configfiles/base/peer-base-org.yaml ./base/peer-base.yaml
         cp ./configfiles/base/ca-base-org.yaml ./base/ca-base.yaml
