@@ -1,4 +1,5 @@
 #!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
 source .env
 source .c.env
 
@@ -50,18 +51,19 @@ function selBCNet() {
              echo "BCNET=FABEXPLOR" >> .hlc.env
              source $HL_CFG_PATH/.hlc.env
 
-             Explorer comes with any of Hyperledger framework, & by now it runs with fabric as default,
-                    Run the Fabric Network first and start explorer"
-             echo   "" >> 00_StartCustomHL.sh"
+             echo "HL Explorer works with Fabric, Besu frame works and its tested with fabric only,
+                    You can select fabric and go through the configurations to genereate explorer configs"
+             echo   "" >> 00_StartCustomHL.sh
              #sed -i -e "s/\.\/08_expstart.sh/""/g" 00_StartCustomHL.sh
              #echo  "./08_expstart.sh" >> 00_StartCustomHL.sh
              if [ $HLENV != "WEB" ];then
              source $HL_CFG_PATH/hlstartup/./08_expstart.sh
-             explorerConfig
-             startexplore
-             else echo "Skipped local fabric start ."
+             #explorerConfig
+             #startexplore
+             else 
+             echo "Skipped local fabric start ."
              echo "Please select the Fabric network first and provide your custom names to generate explorer configuration "
-             exit 1
+             
              fi
              exit 1
              break
@@ -103,7 +105,7 @@ function selBCNet() {
 function selvirtcontainer() {
     echo
     echo
-    echo .env
+
     source .hlc.env
     cd $HL_CFG_PATH
     echo -e $BCOLOR"How do you want to run your network?  On - [Single Host / DockerSwarm / kubernatees ] "$NONE
@@ -128,7 +130,7 @@ function selvirtcontainer() {
                         cd $HL_CFG_PATH/scripts
                         SEDpeernetconnect #updating the Values
                         source $HL_CFG_PATH/hlstartup/08_expstart.sh
-                        cd $HL_CFG_PATH/
+                        cd ..
                         explorerConfig
                         startexplore
                         
@@ -143,22 +145,40 @@ function selvirtcontainer() {
                         echo " Note : Currently Docker Swarm supports Solo order setup with fabric 1.4"
                         echo "Ignore errors for not pingble hostnames/Ipaddres"
                         source $HL_CFG_PATH/hlstartup/02_swarmstart.sh
-                        swarmStart
-                        swarmCopyFiles
-                        swarmchconfig
-                        swarmreplKeys
-                        swarmHost
-                        swarmhostupdte
-                        #dswarmInit
-                        swarmscp
                         if [ $HLENV != "WEB" ];then
-                        swarmDeploy
-                        source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
-                        chlcreate
-                        peernetconnect
-                        else echo ""
+                            dswarmCAcheck
+                            swarmStart
+                            swarmCopyFiles
+                            swarmSEDconfig
+                            swarmreplKeys
+                            swarmHost
+                            swarmhostupdte
+                            #dswarmInit
+                            swarmscp
+
+                            swarmDeploy
+                            source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
+                            chlcreate
+                            peernetconnect
+                        else 
+                            echo ""
+                            dswarmCAcheck
+                            source $HL_CFG_PATH/hlstartup/04_Fabsamplecc.sh
+                            selccode  
+                            swarmStart
+                            swarmCopyFiles
+                            swarmSEDconfig
+                            swarmHostCond
+                            swarmhostupdte
+                            source $HL_CFG_PATH/hlstartup/03_HLFpeernetconnect.sh
+                            cd $HL_CFG_PATH/scripts
+                            SEDpeernetconnect #updating the Values
+                            source $HL_CFG_PATH/hlstartup/08_expstart.sh
+                            cd ..
+                            explorerConfig
+                            startexplore
                         fi
-                        exit 1
+                        #exit 1
                         break
                     ;;
                     Kubernatees)
@@ -195,7 +215,8 @@ function selvirtcontainer() {
                     exit) 
                         break 
                     ;;
-                    *) echo "ERROR: Invalid selection" 
+                    *) 
+                    echo "ERROR: Invalid selection" 
                     ;;
                 esac
             done            
@@ -320,6 +341,7 @@ function selconsensus() {
                 break
             ;;
             exit) 
+                
                 break 
             ;;
             *) echo "ERROR: Invalid selection" 
@@ -348,11 +370,11 @@ function AskconfEmail () {
             yes 2>/dev/null | cp hlstartup/01_prereqs.sh 01_prereqs.sh
             cp ./configfiles/web/web-fab-start-single.sh web-fab-start-single.sh
             if [ "$ORDCOUNT" -eq 0 -a "$CONT" = "SINGLE" ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh explorer 01_prereqs.sh
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme-SingleHost.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml web-fab-start-single.sh explorer 01_prereqs.sh
             elif [ "$ORDCOUNT" -ge 1 -a "$CONT" = "SINGLE" ]; then 
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh explorer 01_prereqs.sh
-            elif [ "$CONT" = "SWARM"  ]; then
-                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml swarm .swarm.env .swarm-var.env explorer 01_prereqs.sh
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme-SingleHost.md base scripts configtx.yaml crypto-config.yaml docker-compose-cli.yaml docker-compose-orderer-etcraft.yaml web-fab-start-single.sh explorer 01_prereqs.sh
+            elif [ "$CONT" = "DSWARM"  ]; then
+                tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env Readme-swarm.md scripts configtx.yaml crypto-config.yaml swarm .swarm.env explorer 01_prereqs.sh
             elif [ "$CONT" = "KUBER"  ]; then
                 tar -czf $DOMAIN_NAME.tar.gz .c.env .hlc.env .env .k8s.env Readme-k8s.md configtx.yaml scripts/1a_firsttimeonly.sh crypto-config.yaml k8s explorer 01_prereqs.sh
             else

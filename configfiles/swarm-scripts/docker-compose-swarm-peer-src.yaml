@@ -1,9 +1,9 @@
 version: '3.2'
 
 networks:
-    fabcar_net:
+    {SWARM_NET}:
         external: 
-            name: fabcar_net
+            name: {SWARM_NET}
 
 services:
     
@@ -50,12 +50,14 @@ services:
             - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
             - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
             - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0_org1:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
         volumes:
             - /var/run/:/host/var/run/
-            - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp
-            - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/tls
-            - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/users
-            - ../channel-artifacts:/var/hyperledger/config
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/tls
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/users
+            - ../../channel-artifacts:/var/hyperledger/config
         command: peer node start
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         depends_on:
@@ -64,7 +66,7 @@ services:
             - 7051:7051
             - 7053:7053
         networks:
-          fabcar_net:
+          {SWARM_NET}:
             aliases:
                 - {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
 
@@ -110,14 +112,16 @@ services:
             - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
             - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
             - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1_org1:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
         volumes:
             - /var/run/:/host/var/run/
             # - $GOPATH/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
             # - ../crypto-config/:/etc/hyperledger/config
-            - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp
-            - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/tls
-            - ../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/users
-            - ../channel-artifacts:/var/hyperledger/config
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/tls
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/users
+            - ../../channel-artifacts:/var/hyperledger/config
         command: peer node start
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         depends_on:
@@ -126,6 +130,6 @@ services:
           - 8051:8051
           - 8053:8053
         networks:
-          fabcar_net:
+          {SWARM_NET}:
             aliases:
                 - {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}

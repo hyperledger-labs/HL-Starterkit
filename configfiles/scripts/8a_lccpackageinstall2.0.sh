@@ -1,3 +1,6 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 source scripts/.c.env
 source scripts/.hlc.env
 function lcpackage20(){

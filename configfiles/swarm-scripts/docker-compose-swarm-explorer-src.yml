@@ -1,0 +1,104 @@
+version: '3.2'
+
+volumes:
+  pgdata:
+  walletstore:
+  #grafana-storage:
+  #prometheus-storage:
+
+networks:
+  {SWARM_NET}:
+    external:
+      name: {SWARM_NET}
+
+services:
+
+  explorerdb:
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 2s
+         max_attempts: 3
+      placement:
+         constraints:
+            - node.hostname == {ORG1_HOSTNAME}
+    image: hyperledger/explorer-db:latest    
+    hostname: explorerdb.{DOMAIN_NAME}
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      {SWARM_NET}:
+        aliases:
+           - explorerdb.{DOMAIN_NAME}
+
+  explorer:
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 2s
+         max_attempts: 3
+      placement:
+         constraints:
+            - node.hostname == {ORG1_HOSTNAME}
+    image: hyperledger/explorer:latest
+    hostname: explorer.{DOMAIN_NAME}
+    environment:
+      - DATABASE_HOST=explorerdb.{DOMAIN_NAME}
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+      - ./examples/net1/crypto:/tmp/crypto
+      - ./wallet:/opt/wallet
+    command: sh -c "sleep 36 && node /opt/explorer/app/main.js && tail -f /dev/null"
+    ports:
+      - 8090:8080
+    depends_on:
+      - explorerdb.{DOMAIN_NAME}
+    networks:
+      {SWARM_NET}:
+        aliases:
+           - explorer.{DOMAIN_NAME}
+
+  #proms:
+  #  container_name: proms
+  #  image: prom/prometheus:latest
+  #  volumes:
+  #    - ./app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml:/etc/prometheus/prometheus.yml
+  #    - prometheus-storage:/prometheus
+  #  ports:
+  #    - '9090:9090'
+  #  networks:
+  #    - {DOMAIN_NAME}
+#
+  #grafana:
+  #  container_name: grafana
+  #  image: grafana/grafana:latest
+  #  volumes:
+  #    - ./app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json:/var/lib/grafana/dashboards/mydashboard.json
+  #    - ./app/platform/fabric/artifacts/operations/grafana_conf/provisioning:/etc/grafana/provisioning
+  #    - grafana-storage:/var/lib/grafana
+  #  ports:
+  #    - '3005:3000'
+  #  networks:
+  #    - {DOMAIN_NAME}
+#
+

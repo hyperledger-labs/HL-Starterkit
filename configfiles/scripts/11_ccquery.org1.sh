@@ -1,3 +1,6 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 source scripts/.c.env
 source scripts/.hlc.env
 echo -e $PCOLOR"Querying chaincode on {PEER_NAME0}.{ORG_1}..."$NONE

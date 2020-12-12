@@ -1,3 +1,5 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
 source scripts/.c.env
 source scripts/.hlc.env
 export CC_LABLNAME="${SAMPLE_CC,,}"

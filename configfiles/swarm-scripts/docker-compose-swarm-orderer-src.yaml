@@ -1,9 +1,9 @@
 version: '3.2'
 
 networks:
-    fabcar_net:
+    {SWARM_NET}:
         external: 
-            name: fabcar_net
+            name: {SWARM_NET}
 
 services:
 
@@ -60,17 +60,17 @@ services:
         ports:
           - 7050:7050
         volumes:
-            - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-            - ../crypto-config/ordererOrganizations/{DOMAIN_NAME}/users:/var/hyperledger/orderer/users
-            - ../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
-            - ../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/tls:/var/hyperledger/orderer/tls
-            - ../channel-artifacts/:/var/hyperledger/orderer/config
+            - ../../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+            - ../../crypto-config/ordererOrganizations/{DOMAIN_NAME}/users:/var/hyperledger/orderer/users
+            - ../../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+            - ../../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/tls:/var/hyperledger/orderer/tls
+            - ../../channel-artifacts/:/var/hyperledger/orderer/config
             #- {ORD_NAME0}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
 #        ports:
 #            - published: 7050
 #              target: 7050
 #              mode: host
         networks:
-          fabcar_net:
+          {SWARM_NET}:
             aliases:
                 - {ORD_NAME0}.{DOMAIN_NAME}

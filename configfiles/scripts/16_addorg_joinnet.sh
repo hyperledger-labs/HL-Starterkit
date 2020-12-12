@@ -1,3 +1,6 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 echo "bringing up the org3 containers"
 docker-compose -f docker-compose-org3.yaml up -d
 sleep 20

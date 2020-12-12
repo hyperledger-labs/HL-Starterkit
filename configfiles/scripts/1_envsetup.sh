@@ -1,3 +1,5 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export HL_CFG_PATH=${PWD}
 

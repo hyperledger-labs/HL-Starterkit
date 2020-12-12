@@ -1,4 +1,6 @@
 #!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 source .c.env
 echo -e $PCOLOR">>> Generating org artifacts"$NONE
 cryptogen generate --config=./crypto-config.yaml

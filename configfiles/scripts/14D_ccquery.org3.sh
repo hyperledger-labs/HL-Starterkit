@@ -1,3 +1,6 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 source scripts/.c.env
 echo -e $PCOLOR"Querying chaincode on {PEER_NAME1}.{ORG_3}..."$NONE
 export CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_3}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_3}.{DOMAIN_NAME}/tls/ca.crt

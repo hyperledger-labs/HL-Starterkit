@@ -1,15 +1,15 @@
 version: '3.2'
 
 networks:
-    fabcar_net:
+    {SWARM_NET}:
         external: 
-            name: fabcar_net
+            name: {SWARM_NET}
 
 services:
 
     ca_org2:
         networks:
-            fabcar_net:
+            {SWARM_NET}:
                 aliases:
                     - {CA_ORG2}.{ORG_2}.{DOMAIN_NAME}
                     - ca_org2
@@ -33,7 +33,7 @@ services:
             - "8054:7054"   
         command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.{ORG_2}.{DOMAIN_NAME}-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY} -b admin:adminpw -d'
         volumes:
-            - ../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/ca/:/etc/hyperledger/fabric-ca-server-config
+            - ../../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/ca/:/etc/hyperledger/fabric-ca-server-config
 
     couchdb0_org2:
         deploy:
@@ -45,10 +45,13 @@ services:
             placement:
                 constraints:
                     - node.hostname == {ORG2_HOSTNAME}
-        image: hyperledger/fabric-couchdb:$DBIMAGE_TAG
+        image: couchdb:$DBIMAGE_TAG
         hostname: couchdb0_org2
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=password
         networks:
-           - fabcar_net
+           - {SWARM_NET}
 
     couchdb1_org2:
         deploy:
@@ -60,7 +63,10 @@ services:
             placement:
                 constraints:
                     - node.hostname == {ORG2_HOSTNAME}
-        image: hyperledger/fabric-couchdb:$DBIMAGE_TAG
+        image: couchdb:$DBIMAGE_TAG
         hostname: couchdb1_org2
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=password
         networks:
-           - fabcar_net
+           - {SWARM_NET}

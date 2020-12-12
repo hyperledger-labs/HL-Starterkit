@@ -1,4 +1,5 @@
 #!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
 #####
 
 trap 'echo got SIGINT' SIGINT #### Control C
@@ -508,9 +509,9 @@ function ScriptVerCopy () {
 function createChannelArtifacts() {
     source $HL_CFG_PATH/.hlc.env
     echo 
-
+   
     echo -e $BCOLOR"Do you want to create channel artifacts? [y,n]"$NONE
-    echo "Note : It will create new crypto materials & channel artifacts"
+    echo "Note : This will create new crypto materials & channel artifacts"
     if [ $HLENV != "WEB" ];then read yn; else yn=y; fi
     case $yn in
         [[yY] | [yY][Ee][Ss] )
@@ -518,13 +519,13 @@ function createChannelArtifacts() {
             sed -i -e "s/{CHLCAP1}/$CHLCAP1/g" configtx.yaml
             sed -i -e "s/{ORDCAP1}/$ORDCAP1/g" configtx.yaml
             sed -i -e "s/{APPCAP1}/$APPCAP1/g" configtx.yaml
-
-            echo running ./scripts/1a_firsttimeonly.sh
+            
             sed -i -e "s/{ORG_1_C}/$ORG_1_C/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{ORG_2_C}/$ORG_2_C/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{SYS_CHANNEL}/$SYS_CHANNEL/g" ./scripts/1a_firsttimeonly.sh
             sed -i -e "s/{CHANNEL_NAME1}/$CHANNEL_NAME1/g" ./scripts/1a_firsttimeonly.sh
-            if [ $HLENV != "WEB" ];then ./scripts/1a_firsttimeonly.sh; else echo "Generate crypto artifacts manually from zip file." ; fi
+            if [ $HLENV != "WEB" ];then echo running firsttime Script 
+            ./scripts/1a_firsttimeonly.sh; else echo -e $GRCOLOR "...Skipping Now, You can generate crypto artifacts from execution script."$NONE ; fi
             
         ;;
         [nN] | [n|N][O|o] )
