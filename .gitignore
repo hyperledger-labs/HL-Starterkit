@@ -1,3 +1,6 @@
+[alias]
+  cmsg = commit -s -m
+  camend = commit -s --amend
 # Emacs backup files
 *~
 *#
@@ -31,3 +34,14 @@ k8sworking/
 new.sh
 e2e*
 checkdock-host.sh
+configfiles/ansiblescripts/06_config_fab2.0-orgadd.yaml1
+configfiles/ansiblescripts/t1.sh
+configfiles/ansiblescripts/test.file
+configfiles/docker-compose-cli-old.yaml
+configfiles/swarm-scripts/docker-compose-swarm-orderer-org.yaml
+configfiles/swarm-scripts/docker-compose-swarm-org2-peer-org.yaml
+configfiles/swarm-scripts/docker-compose-swarm-org2-services-org.yaml
+configfiles/swarm-scripts/docker-compose-swarm-peer-org.yaml
+configfiles/swarm-scripts/docker-compose-swarm-services-org.yaml
+configfiles/swarm-scripts/swarm-org.env
+configfiles/swarm-scripts/swarmsc.sh

@@ -1,8 +1,10 @@
 #!/bin/sh
+#Created by : ravinayag@gmail.com | Ravi Vasagam
 
 echo README FIRST 
 
 source .env
+source .c.env
 echo "The prerequistes is scripted to install as per the HLF - https://hyperledger-fabric.readthedocs.io/en/release-1.4/prereqs.html
 to run HL Fabric with the minimum versions of dependency.
 Ex. Golang, Docker, Docker-compose, Node, Npm, python. However, this can be modify according to version needed.
@@ -12,11 +14,9 @@ You can contact me anytime or leave a comment in message to ravinayag@github  or
 echo " If you do manual running then execute below commands in following sequence, remember you have also placed 
 and extracted your fabric configuration in current folder, if  not please skip this now and extract it before you start this."
 echo 
-echo "source ./01_prereqs.sh"
-echo "prereq14"
-echo "precheck"
+echo -e $GRCOLOR "source ./01_prereqs.sh \n prereq14 \n precheck \n FbinImage" $NONE
 
-echo "## Optional, only you know the images to dowload. Update the Env variables for 'IMAGE_TAG CAIMAGE_TAG DBIMAGE_TAG'"
+echo "## Optional, Download images manually. Update the Env variables for 'IMAGE_TAG CAIMAGE_TAG DBIMAGE_TAG'"
 echo "FbinImage"   
 echo "for Ex : DBIMAGE_TAG=0.4.18 CAIMAGE_TAG=1.4.7 IMAGE_TAG=1.4.7"
 
@@ -62,8 +62,12 @@ function prereq14 {
 
     ##### Add user account to the docker group
     sudo usermod -aG docker $(whoami)
-
-
+    echo
+    echo
+    echo -e $YCOLOR"Before running FbinImage, you need to logout/login for docker permission issues or open a new terminal and follow the steps.\n 
+    1, Move to your directory \n
+    2, Source 01_prereqs.sh \n
+    3, FbinImage \n " $NONE
 }
 
 function precheck () {
@@ -89,6 +93,10 @@ function precheck () {
 
 function FbinImage () {
     source .hlc.env
+    echo "If you get permission denied error, please open a new terminal window and  rerun the script. \n 
+    1, Move to your directory \n 2, source 01_prereqs.sh \n 3, FbinImage \n  "
+    sleep 5
+
     export `cat $HL_CFG_PATH/.hlc.env | grep IMAGE_TAG`
     curl -sSL http://bit.ly/2ysbOFE | bash -s -- $IMAGE_TAG $CAIMAGE_TAG $DBIMAGE_TAG
     
@@ -96,7 +104,7 @@ function FbinImage () {
     then 
         docker pull hyperledger/fabric-couchdb:0.4.15; 
         docker tag hyperledger/fabric-couchdb:0.4.15 couchdb:0.4.15; 
-    else echo "error in imaging"; 
+    
     fi
 }
 

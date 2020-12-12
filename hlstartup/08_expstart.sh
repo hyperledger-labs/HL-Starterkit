@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#Created by : ravinayag@gmail.com | Ravi Vasagam
 
 #set -x 
 source .env
@@ -12,10 +12,12 @@ function explorerConfig() {
     mkdir -p ./explorer/examples/net1/connection-profile
 
     cp ./configfiles/explorer/docker-compose-explorer-org.yml ./explorer/docker-compose-explorer.yml
+    if [ "$CONT" = "DSWARM"  ]; then cp ./configfiles/swarm-scripts/docker-compose-swarm-explorer-src.yml ./explorer/docker-compose-explorer.yml; fi
     cp ./configfiles/explorer/first-network-org.json  ./explorer/examples/net1/connection-profile/first-network.json
     cp ./configfiles/explorer/config-org.json  ./explorer/examples/net1/config.json
 
     sed -i -e "s/{DOMAIN_NAME}/$DOMAIN_NAME/g" ./explorer/docker-compose-explorer.yml
+    sed -i -e "s/{SWARM_NET}/$SWARM_NET/g" ./explorer/docker-compose-explorer.yml
 
     sed -i -e "s/{PEER_NAME0}/$PEER_NAME0/g" ./explorer/examples/net1/connection-profile/first-network.json
     sed -i -e "s/{DOMAIN_NAME}/$DOMAIN_NAME/g" ./explorer/examples/net1/connection-profile/first-network.json

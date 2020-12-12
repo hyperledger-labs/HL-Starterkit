@@ -1,3 +1,6 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 cd org3-artifacts
 export PATH=${PWD}/../bin:${PWD}:$PATH
 export HL_CFG_PATH=${PWD}

@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  webhlftool:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.hlftool
+    ports:
+      - "8000:3000"

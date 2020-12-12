@@ -1,0 +1,43 @@
+OrdererOrgs:
+  - Name: Orderer0
+    Domain: singledomain.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer0
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.singledomain.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: p0
+      - Hostname: p1
+
+#    Template:
+#      Count: 1
+    Users:
+      Count: 1
+  
+  - Name: Org2
+    Domain: org2.singledomain.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: p0
+      - Hostname: p1
+
+#    Template:
+#      Count: 1
+    Users:
+      Count: 1
+# <!-- BEGIN ANSIBLE MANAGED BLOCK by ravi -->
+  - Name: Org3
+    Domain: org3.singledomain.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: p0
+      - Hostname: p1
+
+#    Template:
+#      Count: 1
+    Users:
+      Count: 1
+# <!-- END ANSIBLE MANAGED BLOCK by ravi -->

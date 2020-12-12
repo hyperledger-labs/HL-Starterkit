@@ -1,0 +1,76 @@
+version: '3.2'
+
+networks:
+    {SWARM_NET}:
+        external: 
+            name: {SWARM_NET}
+
+services:
+
+    orderer_org1:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 2s
+                max_attempts: 3
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: hyperledger/fabric-orderer:$IMAGE_TAG
+        hostname: {ORD_NAME0}.{DOMAIN_NAME}
+        environment:
+            - FABRIC_LOGGING_SPEC=INFO
+            - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+            - ORDERER_GENERAL_GENESISMETHOD=file
+            #- ORDERER_GENERAL_GENESISFILE=/var/hyperledger/config/genesis.block
+            - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+            - ORDERER_GENERAL_LOCALMSPID={ORD_NAME0_C}MSP
+            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+            - ORDERER_GENERAL_TLS_ENABLED=true
+            - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+            - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+            - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+            - ORDERER_HOME=/var/hyperledger/orderer
+            - ORDERER_GENERAL_LISTENPORT=7050
+            - ORDERER_GENERAL_LEDGERTYPE=ram
+            - CONFIGTX_ORDERER_BATCHSIZE_MAXMESSAGECOUNT=10
+            - CONFIGTX_ORDERER_BATCHTIMEOUT=2s
+            #- CONFIGTX_ORDERER_ADDRESSES=[127.0.0.1:7050]
+            - ORDERER_TLS_CLIENTAUTHREQUIRED=false
+            - ORDERER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/orderer/users/Admin@{DOMAIN_NAME}/tls/ca.crt
+            - ORDERER_TLS_CLIENTCERT_FILE=/var/hyperledger/orderer/users/Admin@{DOMAIN_NAME}/tls/client.crt
+            - ORDERER_TLS_CLIENTKEY_FILE=/var/hyperledger/orderer/users/Admin@{DOMAIN_NAME}/tls/client.key
+            - ORDERER_HOST={ORD_NAME0}.{DOMAIN_NAME}
+            - CONFIGTX_ORDERER_ORDERERTYPE=kafka
+            - ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1
+            #- CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]
+            #- ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+            #- ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+            - ORDERER_KAFKA_VERBOSE=true
+            - ORDERER_GENERAL_GENESISPROFILE=SecureKafka
+            - ORDERER_ABSOLUTEMAXBYTES=10MB
+            - ORDERER_PREFERREDMAXBYTES=512KB
+            - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+            - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+            - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+        command: orderer
+        ports:
+          - 7050:7050
+        volumes:
+            - ../../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+            - ../../crypto-config/ordererOrganizations/{DOMAIN_NAME}/users:/var/hyperledger/orderer/users
+            - ../../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/msp:/var/hyperledger/orderer/msp
+            - ../../crypto-config/ordererOrganizations/{DOMAIN_NAME}/orderers/{ORD_NAME0}.{DOMAIN_NAME}/tls:/var/hyperledger/orderer/tls
+            - ../../channel-artifacts/:/var/hyperledger/orderer/config
+            #- {ORD_NAME0}.{DOMAIN_NAME}:/var/hyperledger/production/orderer
+#        ports:
+#            - published: 7050
+#              target: 7050
+#              mode: host
+        networks:
+          {SWARM_NET}:
+            aliases:
+                - {ORD_NAME0}.{DOMAIN_NAME}

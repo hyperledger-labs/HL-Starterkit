@@ -1,0 +1,104 @@
+version: '3.2'
+
+volumes:
+  pgdata:
+  walletstore:
+  #grafana-storage:
+  #prometheus-storage:
+
+networks:
+  dswarm_net:
+    external:
+      name: dswarm_net
+
+services:
+
+  explorerdb:
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 2s
+         max_attempts: 3
+      placement:
+         constraints:
+            - node.hostname == {ORG1_HOSTNAME}
+    image: hyperledger/explorer-db:latest    
+    hostname: explorerdb.dstest.com
+    environment:
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      dswarm_net:
+        aliases:
+           - explorerdb.dstest.com
+
+  explorer:
+    deploy:
+      replicas: 1
+      restart_policy:
+         condition: on-failure
+         delay: 2s
+         max_attempts: 3
+      placement:
+         constraints:
+            - node.hostname == {ORG1_HOSTNAME}
+    image: hyperledger/explorer:latest
+    hostname: explorer.dstest.com
+    environment:
+      - DATABASE_HOST=explorerdb.dstest.com
+      - DATABASE_DATABASE=fabricexplorer
+      - DATABASE_USERNAME=hppoc
+      - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
+      - DISCOVERY_AS_LOCALHOST=false
+    volumes:
+      - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+      - ./examples/net1/crypto:/tmp/crypto
+      - ./wallet:/opt/wallet
+    command: sh -c "sleep 36 && node /opt/explorer/app/main.js && tail -f /dev/null"
+    ports:
+      - 8090:8080
+    depends_on:
+      - explorerdb.dstest.com
+    networks:
+      dswarm_net:
+        aliases:
+           - explorer.dstest.com
+
+  #proms:
+  #  container_name: proms
+  #  image: prom/prometheus:latest
+  #  volumes:
+  #    - ./app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml:/etc/prometheus/prometheus.yml
+  #    - prometheus-storage:/prometheus
+  #  ports:
+  #    - '9090:9090'
+  #  networks:
+  #    - dstest.com
+#
+  #grafana:
+  #  container_name: grafana
+  #  image: grafana/grafana:latest
+  #  volumes:
+  #    - ./app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json:/var/lib/grafana/dashboards/mydashboard.json
+  #    - ./app/platform/fabric/artifacts/operations/grafana_conf/provisioning:/etc/grafana/provisioning
+  #    - grafana-storage:/var/lib/grafana
+  #  ports:
+  #    - '3005:3000'
+  #  networks:
+  #    - dstest.com
+#
+

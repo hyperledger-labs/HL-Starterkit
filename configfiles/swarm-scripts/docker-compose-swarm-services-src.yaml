@@ -1,0 +1,118 @@
+version: '3.2'
+
+networks:
+    {SWARM_NET}:
+        external: 
+            name: {SWARM_NET}
+
+services:
+
+    ca_org1:
+        networks:
+            {SWARM_NET}:
+                aliases:
+                    - {CA_ORG1}.{ORG_1}.{DOMAIN_NAME}
+                    - ca_org1
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: hyperledger/fabric-ca:$CAIMAGE_TAG
+        hostname: {CA_ORG1}.{ORG_1}.{DOMAIN_NAME}
+        environment:
+            - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+            - FABRIC_CA_SERVER_CA_NAME={CA_ORG1}.{ORG_1}.{DOMAIN_NAME}
+            - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY}
+        ports:
+            - "7054:7054"   
+        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.{ORG_1}.{DOMAIN_NAME}-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG1-CA-KEY} -b admin:adminpw -d'
+        volumes:
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/ca/:/etc/hyperledger/fabric-ca-server-config
+
+    cli:
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: hyperledger/fabric-tools:$IMAGE_TAG
+        tty: true
+        hostname: cli
+        environment:
+          - SYS_CHANNEL=$SYS_CHANNEL
+          - GOPATH=/opt/gopath
+          - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+          - FABRIC_LOGGING_SPEC=INFO
+          - CORE_PEER_ID=cli
+          - CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+          - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+          - CORE_CHAINCODE_KEEPALIVE=10
+          - CORE_PEER_TLS_ENABLED=true
+          - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/server.crt
+          - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/server.key
+          - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls/ca.crt
+          - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users/Admin@{ORG_1}.{DOMAIN_NAME}/msp
+          
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        command: /bin/bash
+        volumes:
+            - /var/run/:/host/var/run/
+            - ../../../chaincode:/opt/gopath/src/github.com/chaincode
+            - ../../crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto
+            - ../../channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+            - ../../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+            - ../../../bin/:/var/bin
+        networks:
+            - {SWARM_NET}
+
+    couchdb0_org1:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: couchdb:$DBIMAGE_TAG
+        hostname: couchdb0_org1
+        environment:
+           - COUCHDB_USER=admin
+           - COUCHDB_PASSWORD=password
+        ports:
+           - "5984:5984"           
+        networks:
+           - {SWARM_NET}    
+
+    couchdb1_org1:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: couchdb:$DBIMAGE_TAG
+        hostname: couchdb1_org1
+        environment:
+           - COUCHDB_USER=admin
+           - COUCHDB_PASSWORD=password
+        ports:
+           - "6984:5984"   
+        networks:
+           - {SWARM_NET}    

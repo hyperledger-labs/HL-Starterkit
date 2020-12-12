@@ -1,0 +1,72 @@
+version: '3.2'
+
+networks:
+    dswarm_net:
+        external: 
+            name: dswarm_net
+
+services:
+
+    ca_org2:
+        networks:
+            dswarm_net:
+                aliases:
+                    - ca2.org2.dstest.com
+                    - ca_org2
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == 
+        image: hyperledger/fabric-ca:$CAIMAGE_TAG
+        hostname: ca2.org2.dstest.com
+        environment:
+            - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+            - FABRIC_CA_SERVER_CA_NAME=ca2.org2.dstest.com
+            - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.dstest.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY}
+        ports:
+            - "8054:7054"   
+        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org2.dstest.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY} -b admin:adminpw -d'
+        volumes:
+            - ../../crypto-config/peerOrganizations/org2.dstest.com/ca/:/etc/hyperledger/fabric-ca-server-config
+
+    couchdb0_org2:
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == 
+        image: couchdb:$DBIMAGE_TAG
+        hostname: couchdb0_org2
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=password
+        networks:
+           - dswarm_net
+
+    couchdb1_org2:
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == 
+        image: couchdb:$DBIMAGE_TAG
+        hostname: couchdb1_org2
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=password
+        networks:
+           - dswarm_net

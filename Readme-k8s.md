@@ -1,7 +1,12 @@
 ###############################################
-Please run this below
+# Please run this below
 
-$ source Readme-k8s.md
+<!--- 
+#!/bin/bash
+Created by : ravinayag@gmail.com | Ravi Vasagam
+-->
+
+# $ source Readme-k8s.md
 ###############################################
 
 

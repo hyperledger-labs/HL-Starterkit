@@ -1,0 +1,135 @@
+version: '3.2'
+
+networks:
+    {SWARM_NET}:
+        external: 
+            name: {SWARM_NET}
+
+services:
+    
+    peer0_org1:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: hyperledger/fabric-peer:$IMAGE_TAG
+        hostname: {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+        environment:
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_PEER_NETWORKID={SWARM_NET}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE={SWARM_NET}
+            - CORE_PEER_ADDRESSAUTODETECT=true
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
+            #- CORE_LEDGER_STATE_STATEDATABASE=LevelDB
+            - FABRIC_LOGGING_SPEC=INFO
+            - CORE_LOGGING_GOSSIP=${CORE_LOGGING_GOSSIP}
+            - CORE_LOGGING_MSP=DEBUG
+            # - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
+            # TLS settings
+            - CORE_PEER_TLS_ENABLED=true
+            - CORE_PEER_TLS_CLIENTAUTHREQUIRED=false
+            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/tls/ca.crt
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+            - CORE_PEER_CHAINCODEADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7052
+            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+            - CORE_PEER_ID={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+            - CORE_PEER_ADDRESS={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+            - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0_org1:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+        volumes:
+            - /var/run/:/host/var/run/
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/tls
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/users
+            - ../../channel-artifacts:/var/hyperledger/config
+        command: peer node start
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        depends_on:
+            - couchdb0
+        ports:
+            - 7051:7051
+            - 7053:7053
+        networks:
+          {SWARM_NET}:
+            aliases:
+                - {PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}
+
+    peer1_org1:
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG1_HOSTNAME}
+        image: hyperledger/fabric-peer:$IMAGE_TAG
+        hostname: {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
+        environment:
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_PEER_NETWORKID={SWARM_NET}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE={SWARM_NET}
+            - CORE_PEER_ADDRESSAUTODETECT=true
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
+            #- CORE_LEDGER_STATE_STATEDATABASE=LevelDB
+            - FABRIC_LOGGING_SPEC=INFO
+            - CORE_LOGGING_GOSSIP=${CORE_LOGGING_GOSSIP}
+            - CORE_LOGGING_MSP=DEBUG
+            # - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp
+            # TLS settings
+            - CORE_PEER_TLS_ENABLED=true
+            - CORE_PEER_TLS_CLIENTAUTHREQUIRED=false
+            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/tls/ca.crt
+            - CORE_PEER_CHAINCODEADDRESS={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8052
+            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+            - CORE_PEER_ID={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}
+            - CORE_PEER_ADDRESS={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT={PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}:8051
+            - CORE_PEER_GOSSIP_BOOTSTRAP={PEER_NAME0}.{ORG_1}.{DOMAIN_NAME}:7051
+            - CORE_PEER_LOCALMSPID={ORG_1_C}MSP
+            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1_org1:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=password
+        volumes:
+            - /var/run/:/host/var/run/
+            # - $GOPATH/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+            # - ../crypto-config/:/etc/hyperledger/config
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/msp:/etc/hyperledger/msp
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/peers/{PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}/tls:/etc/hyperledger/tls
+            - ../../crypto-config/peerOrganizations/{ORG_1}.{DOMAIN_NAME}/users:/etc/hyperledger/users
+            - ../../channel-artifacts:/var/hyperledger/config
+        command: peer node start
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        depends_on:
+            - couchdb0
+        ports:
+          - 8051:8051
+          - 8053:8053
+        networks:
+          {SWARM_NET}:
+            aliases:
+                - {PEER_NAME1}.{ORG_1}.{DOMAIN_NAME}

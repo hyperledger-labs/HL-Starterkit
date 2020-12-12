@@ -1,6 +1,32 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 source .env
 source .hlc.env
 source .c.env
+
+
+
+function checkDIRpath () {
+    P=$PWD
+    if [[ $P =~ "fabric-samples" ]] ; then 
+    echo -e $GRCOLOR "Found fabric-samples folder from your current path \n
+    Checking prereq status " $NONE
+    source 01_prereqs.sh
+    precheck
+    echo "If any of prereq's are NULL value"
+    echo "Please run prereq scripts in following order or you can do manuall install for missing component."
+    echo -e $GRCOLOR "ex : source 01_prereqs.sh \n prereq14 \n precheck \n   " $NONE
+    else 
+    echo
+    echo -e $RCOLOR "!!! Attenttion !!!" $NONE
+    echo "Fabric-samples folder not found"
+    echo "Please run prereq scripts in following order"
+    echo -e $GRCOLOR "ex :  source 01_prereqs.sh \n prereq14 \n FbinImage \n precheck \n" $NONE
+    
+    fi; 
+}
+checkDIRpath
 
 
 echo "Ensure at this time you downloaded fabric-samples, binaries and Fabric-images, 
@@ -9,25 +35,6 @@ echo " Note : If fabric version 1.4.3 and couchDB version is 0.4.15, then please
 echo  " Execute with below commands in sequence"
 echo -e $GRCOLOR "ex :  \n DBimagechg(optional) \n shfstartfabnet \n shfCHLcreate \n shfPeerConnect  \n shfexplorer \n shfstop" $NONE
 
-
-function checkDIRpath () {
-    P=$PWD
-    if [[ $P =~ "fabric-samples" ]] ; then 
-    echo "Found fabric-samples folder from your current path \n
-    Checking prereq status "
-    source 01_prereqs.sh
-    precheck
-    echo "If any of prereq's are NULL value"
-    echo "Please run prereq scripts in following order or you can do manuall install for missing component."
-    echo -e $GRCOLOR "ex : source 01_prereqs.sh \n prereq14 \n precheck \n   " $NONE
-    else 
-    echo "Fabric-samples folder not found"
-    echo " Please run prereq scripts in following order"
-    echo -e $GRCOLOR "ex :  source 01_prereqs.sh \n prereq14 \n FbinImage \n precheck \n" $NONE
-    
-    fi; 
-}
-checkDIRpath
 
 
 cd $HL_CFG_PATH/

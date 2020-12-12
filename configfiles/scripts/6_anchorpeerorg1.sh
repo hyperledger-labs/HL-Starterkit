@@ -1,3 +1,6 @@
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 source scripts/.c.env
 echo -e $PCOLOR"Making the {PEER_NAME0}.{ORG_1} as AnchorPeer for {ORG_1} to {CHANNEL_NAME1} ..."$NONE
 #set -x

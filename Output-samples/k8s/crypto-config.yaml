@@ -1,0 +1,37 @@
+OrdererOrgs:
+  - Name: Orderer0
+    Domain: sampledomaink8s.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer0
+        CommonName: orderer0
+      - Hostname: orderer1
+        CommonName: orderer1
+      - Hostname: orderer2
+        CommonName: orderer2
+PeerOrgs:
+  - Name: Myorg1
+    Domain: myorg1
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+        CommonName: peer0-myorg1
+      - Hostname: peer1
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1
+  
+  - Name: Myorg2
+    Domain: myorg2
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+        CommonName: peer0-myorg2
+      - Hostname: peer1
+
+#    Template:
+#      Count: {PCOUNT}
+    Users:
+      Count: 1

@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hlexplorer-db
+  name: hlexplorer-db
+  namespace: hlf
+spec:
+  type: ClusterIP 
+  ports:
+  - name: pgsql
+    protocol: TCP
+    port: 5432
+    targetPort: 5432 
+  selector:
+    app: hlexplorer-db
+---
+#---------------- explorer-db Metrics Service ---------------
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hlexplorer-db
+    metrics-service: "true"
+  name: hlexplorer-db-metrics
+  namespace: hlf
+spec:
+  type: ClusterIP
+  ports:
+  - name: "hlexplorer-db-metrics"
+    port: 10443
+    targetPort: 10443
+  selector:
+    app: hlexplorer-db

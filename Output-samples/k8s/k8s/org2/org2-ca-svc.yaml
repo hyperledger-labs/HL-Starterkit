@@ -1,0 +1,16 @@
+--- #---------------- CA OE1 Service ---------------
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ca2-myorg2
+  name: ca2-myorg2
+  namespace: hlf
+spec:
+  type: ClusterIP
+  ports:
+    - name: "https"
+      port: 7054
+      targetPort: 7054
+  selector:
+    app: ca2-myorg2

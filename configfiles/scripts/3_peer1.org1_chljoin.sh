@@ -1,4 +1,7 @@
 #!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
+
 source scripts/.c.env
 echo -e $PCOLOR"Joining the {PEER_NAME1}.{ORG_1} to {CHANNEL_NAME1} ..."$NONE
 #set -x

@@ -1,4 +1,6 @@
-#cp first-network.json.org first-network.json.var
+#!/bin/bash
+#Created by : ravinayag@gmail.com | Ravi Vasagam
+
 echo " move to exploerer directory and run tnis"
 
 export HOMEPATH=$HL_CFG_PATH

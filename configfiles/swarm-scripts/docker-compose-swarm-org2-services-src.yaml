@@ -1,0 +1,72 @@
+version: '3.2'
+
+networks:
+    {SWARM_NET}:
+        external: 
+            name: {SWARM_NET}
+
+services:
+
+    ca_org2:
+        networks:
+            {SWARM_NET}:
+                aliases:
+                    - {CA_ORG2}.{ORG_2}.{DOMAIN_NAME}
+                    - ca_org2
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG2_HOSTNAME}
+        image: hyperledger/fabric-ca:$CAIMAGE_TAG
+        hostname: {CA_ORG2}.{ORG_2}.{DOMAIN_NAME}
+        environment:
+            - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+            - FABRIC_CA_SERVER_CA_NAME={CA_ORG2}.{ORG_2}.{DOMAIN_NAME}
+            - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.{ORG_2}.{DOMAIN_NAME}-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY}
+        ports:
+            - "8054:7054"   
+        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.{ORG_2}.{DOMAIN_NAME}-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/{ORG2-CA-KEY} -b admin:adminpw -d'
+        volumes:
+            - ../../crypto-config/peerOrganizations/{ORG_2}.{DOMAIN_NAME}/ca/:/etc/hyperledger/fabric-ca-server-config
+
+    couchdb0_org2:
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG2_HOSTNAME}
+        image: couchdb:$DBIMAGE_TAG
+        hostname: couchdb0_org2
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=password
+        networks:
+           - {SWARM_NET}
+
+    couchdb1_org2:
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 2
+            placement:
+                constraints:
+                    - node.hostname == {ORG2_HOSTNAME}
+        image: couchdb:$DBIMAGE_TAG
+        hostname: couchdb1_org2
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=password
+        networks:
+           - {SWARM_NET}

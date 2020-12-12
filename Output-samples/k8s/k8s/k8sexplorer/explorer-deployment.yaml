@@ -1,0 +1,93 @@
+--- #---------------- Explorer Deployment ---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hlexplorer
+  name: hlexplorer
+  namespace: hlf
+spec:
+  selector:
+    matchLabels:
+      app: hlexplorer
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: hlexplorer
+    spec:
+      containers:
+        - args:
+            #- cd /opt/explorer
+            #- /opt/explorer
+            #- sleep 16 &&
+            #- node
+            #- /opt/explorer/main.js 
+            #- tail -f /dev/null
+            - sh
+            - -c
+            - sleep 16&& node /opt/explorer/main.js && tail -f /dev/null
+            #- /opt/explorer/main.js
+          #command: ["sh" , "-c" , "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"]
+          name: hlexplorer
+          image: hyperledger/explorer:1.1.2
+          env:
+            - name: EXTRA_HOST
+              value: grafana
+            - name: EXTRA_HOST
+              value: prometheus
+            - name: DATABASE_HOST
+              value: hlexplorer-db
+            - name: DATABASE_DATABASE
+              value: fabricexplorer
+            - name: DATABASE_USERNAME
+              value: hppoc
+            - name: DATABASE_PASSWD
+              value: password
+            - name: LOG_LEVEL_APP
+              value: debug
+            - name: LOG_LEVEL_DB
+              value: debug
+            - name: LOG_LEVEL_CONSOLE
+              value: info
+            - name: LOG_CONSOLE_STDOUT
+              value: "true"
+            - name: DISCOVERY_AS_LOCALHOST
+              value: "false"
+            - name: CORE_OPERATIONS_LISTENADDRESS
+              value: 0.0.0.0:9443
+            - name: CORE_METRICS_PROVIDER
+              value: prometheus
+          ports:
+            - containerPort: 8080
+            - containerPort: 9443
+          volumeMounts:
+            - mountPath: /opt/explorer/app/platform/fabric/config.json
+              name: configjson-drv1
+            - mountPath: /opt/explorer/app/platform/fabric/connection-profile
+              name: conn-prof-drv2
+            - mountPath: /tmp/crypto
+              name: crypto-drv3
+            - mountPath: /opt/wallet
+              name: wallet-drv4
+
+      restartPolicy: Always
+      volumes:
+        - name: configjson-drv1
+          hostPath:
+            path: {HOME_DIR_PATH}/explorer/examples/net1/config.json
+
+        - name: conn-prof-drv2
+          hostPath:
+            path: {HOME_DIR_PATH}/explorer/examples/net1/connection-profile
+
+        - name: crypto-drv3
+          hostPath:
+            path: {HOME_DIR_PATH}/explorer/examples/net1/crypto
+
+        - name: wallet-drv4
+          hostPath:
+            path: {HOME_DIR_PATH}/explorer/wallet
+
