@@ -3,8 +3,8 @@ Hyperledger CLI Config Generator Tool
 
 # HL_Starterkit Automation
 
-Disclaimer : Its fork from Hyperledger fabric samples[https://github.com/hyperledger/fabric-samples],  On my self Interest I created this Devops Automation for HL Learners/Startup Community.  
-I'm looking for tester community to fine tune this tool  to serve better. 
+Disclaimer : Its fork from Hyperledger fabric samples[https://github.com/hyperledger/fabric-samples],  On personal Interest I created this Devops Automation for HL Learners/Startup Community.  
+I'm looking for testers / Scripters to fine tune this tool  to make available for everyone's use. 
 
 Currently I'm Optimizing the code and waiting for UAT from learners community, I will be posting the code soon.  
 
@@ -46,11 +46,11 @@ To get started, see the demo video.
 
 4, Generate config and send email with attachment - Ready
 
-5, Fabric 1.4.x / 2.x - Basic with 2 orgs and above is ready with example chaincode02 in Docker - Swarm network - Ready
+5, Fabric 1.4.x / 2.x - Basic with 2 orgs and above is ready with example chaincode02 in Docker - Swarm network - ( Swarm Network is not ready for web Config generation)
 
-6, Consensus type - etcdRaft customaisation - Ready 
+6, Consensus type - etcdRaft/Solo customaisation - Ready 
 
-7, Kubernatees with basic  & extended deployment for 1.4x and 2.x ( Tested with 2.x, )
+7, Kubernatees with basic & extended deployment for 1.4x and 2.x ( Tested with 2.x, )
 
 8, Samples 1.4x = SACC, 2.x= Asset-transfer-Basic, SACC, ABAC -  Ready 
 
