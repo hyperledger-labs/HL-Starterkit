@@ -1,0 +1,174 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer0.singledomain.com:
+  p0.org1.singledomain.com:
+  p1.org1.singledomain.com:
+  p0.org2.singledomain.com:
+  p1.org2.singledomain.com:
+
+
+
+networks:
+  hlfnet:
+
+services:
+
+  ca1.singledomain.com:
+    extends:
+      file: base/ca-base.yaml
+      service: ca-base
+    container_name: ca1.singledomain.com
+    networks:
+      - hlfnet
+
+  orderer0.singledomain.com:
+    extends:
+      file: base/docker-compose-base.yaml
+      service: orderer0.singledomain.com
+    container_name: orderer0.singledomain.com
+    networks:
+      - hlfnet
+
+  p0.org1.singledomain.com:
+    container_name: p0.org1.singledomain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: p0.org1.singledomain.com
+    depends_on:
+      - couchdb0
+    networks:
+      - hlfnet
+
+  p1.org1.singledomain.com:
+    container_name: p1.org1.singledomain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: p1.org1.singledomain.com
+    depends_on:
+      - couchdb1
+    networks:
+      - hlfnet
+
+  p0.org2.singledomain.com:
+    container_name: p0.org2.singledomain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: p0.org2.singledomain.com
+    depends_on:
+      - couchdb2
+    networks:
+      - hlfnet
+
+  p1.org2.singledomain.com:
+    container_name: p1.org2.singledomain.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: p1.org2.singledomain.com
+    depends_on:
+      - couchdb3
+    networks:
+      - hlfnet
+
+  couchdb0:
+    container_name: couchdb0
+    image: couchdb:$DBIMAGE_TAG
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "5984:5984"
+    networks:
+      - hlfnet
+
+  couchdb1:
+    container_name: couchdb1
+    image: couchdb:$DBIMAGE_TAG
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "6984:5984"
+    networks:
+      - hlfnet
+
+
+  couchdb2:
+    container_name: couchdb2
+    image: couchdb:$DBIMAGE_TAG
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "7984:5984"
+    networks:
+      - hlfnet
+
+  couchdb3:
+    container_name: couchdb3
+    image: couchdb:$DBIMAGE_TAG
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "6884:5984"
+    networks:
+      - hlfnet
+
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - SYS_CHANNEL=$SYS_CHANNEL
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=p0.org1.singledomain.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.singledomain.com/peers/p0.org1.singledomain.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.singledomain.com/peers/p0.org1.singledomain.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.singledomain.com/peers/p0.org1.singledomain.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.singledomain.com/users/Admin@org1.singledomain.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - orderer0.singledomain.com
+      - p0.org1.singledomain.com
+      - p1.org1.singledomain.com
+      - p0.org2.singledomain.com
+      - p1.org2.singledomain.com
+    networks:
+      - hlfnet

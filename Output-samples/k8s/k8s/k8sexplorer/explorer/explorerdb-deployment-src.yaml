@@ -1,0 +1,70 @@
+---  #---------------- Explorer-DB Deployment ---------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hlexplorer-db
+  name: hlexplorer-db
+  namespace: {K8S_NS}
+spec:
+  selector:
+    matchLabels:
+      app: hlexplorer-db
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: hlexplorer-db
+    spec:
+
+      containers:
+        - name: hlexplorer-db #postgres
+          #image: postgres:10.4-alpine
+          image: hyperledger/explorer-db:latest
+        #   args: #["/bin/bash","-c","/script/initdb.sh && ls "] 
+        #     - sh
+        #     - -c
+        #     - ls -l /opt/script/ && /opt/script/k8sdocker-entrypoint.sh
+          env:
+          - name: TZ
+            value: "America/Sao_Paulo"
+          - name: DATABASE_DATABASE
+            value: fabricexplorer
+          - name: DATABASE_USERNAME
+            value: hppoc
+          - name: DATABASE_PASSWORD
+            value: password
+            # ports:
+            #     - containerPort: 5432
+          #healthcheck:
+          #  test: "pg_isready -h localhost -p 5432 -q -U postgres"
+          #  interval: 30s
+          #  timeout: 10s
+          #  retries: 5
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: db-data       
+            # - mountPath: /docker-entrypoint-initdb.d
+            #   name: init-script
+              #subPath: createdb.sh
+
+            - mountPath: /docker-entrypoint-initdb.d/k8sdocker-entrypoint.sh
+              name: init-script1
+              #subPath: initdb.sh
+      volumes:
+            - name: dbdata-drv1
+              hostPath:
+                path: /home/ravi/storage/pgdata
+            - name: init-script1
+              hostPath: 
+                path: {HOME_DIR_PATH}/k8sdocker-entrypoint.sh
+            # - name: init-script
+            #   configMap:
+            #     name: pgsql-db-init-script
+            #   defaultMode: 0744
+
+            - name: db-data
+              emptyDir: {}
+              

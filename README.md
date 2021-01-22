@@ -1,10 +1,16 @@
-# HLF_Automation
+# HL-Starterkit
+Hyperledger Starterkit    
 
-Disclaimer : On my self Interest for Devops Automation
+# HL_Starterkit 
 
-Hyperledger Fabric network is now Automated with Custom Configuration creator. The tools consists of Advance Shelling scripting, Ansible, and Python. By Default the configurator tool generates with Two ORGS and two Peers an extension of BYFN model for Sample. 
+Disclaimer : Its fork from Hyperledger fabric samples[https://github.com/hyperledger/fabric-samples],  On personal Interest I created this Devops Automation for HL Learners/Startup Community.  
+I'm looking for testers / Scripters to fine tune this tool  to make available for everyone's use. 
 
-What you can do with this Tool dynamically .... ?
+Currently I'm Optimizing the code and waiting for UAT from learners community.
+
+Hyperledger Fabric network is now Automated with Custom Config generator. The tools consists of Advance Shell scripting, Ansible, and Python along with Docker/k8s files. By Default the configurator tool generates with Two ORGS and two Peers. where i was explaining for BYFN/EYFN. 
+
+### What you can do with this tool dynamically .... ?
 
 1, You can Create/Change your DOMAIN NAME, ORGS, Orderer,Peer and CA Names.
 
@@ -16,9 +22,9 @@ What you can do with this Tool dynamically .... ?
 
 5, You can Deploy the Fabric network Single node / Multinode using DockerSwarm / Kubernatees.
 
-6, You can select the Blockchain Network Between Hyperledger Frame Works. (Ex. Fabric/ Besu/ Sawtooth)
+6, You can select the Blockchain Network Between Hyperledger Frame Works. (Ex. Fabric/ Besu/ Sawtooth - besu/sawtooth under devlopment)
 
-7, You can extend your Org Dynamically
+7, You can extend your Org Dynamically with custom name.
 
 8, You can Upgrade your chaincode after Endorsement / Chaincode changes
 
@@ -30,7 +36,7 @@ This can be deployed on local system to generate config and test. You can also u
 
 To get started, see the demo video.
 
-# Test Case Ready and To do :
+### Test Case Ready :
 
 1, Fabric 1.4.x / 2.x - Basic with 2 orgs and above is ready with example chaincode02 in single host  - Ready
 
@@ -38,22 +44,56 @@ To get started, see the demo video.
 
 3, HLF - Pre-requisties - Ready
 
-4, Generate config and send email with attachment - Ready
+4, Generate config and send email with attachment - Ready (Sender email has to update)
 
-5, Fabric 1.4.x / 2.x - Basic with 2 orgs and above is ready with example chaincode02 in Docker - Swarm network - Ready
+5, Fabric 1.4.x / 2.x - Basic with 2 orgs and above is ready with Docker - Swarm network - ( Swarm Network is not ready for web Config generation) and kubernetes.
 
-6, Consensus type - etcdRaft customaisation - Ready 
+6, Consensus type - etcdRaft/Solo customaisation - Ready 
 
-- Todo
+7, Kubernatees with basic & extended deployment for 1.4x and 2.x ( Tested with 2.x, )
 
-7, Kubernatees with basic  & extended deployment for 1.4x and 2.x
+8, Samples 1.4x = SACC, 2.x= Asset-transfer-Basic, SACC, ABAC -  Ready 
 
-8, Privatedata with private channel
+## Todo
 
-9, Add option for Custom chaincode
+9, Privatedata with private channel
 
-10, Add other chaincodes for test
+10, Add option for Custom chaincode ( Approching Chain code developers)
 
-11, Optimize the scripts
+11, Add other chaincodes for test
 
-12, Samples 1.4x = SACC, 2.x= Asset-transfer-Basic, SACC, ABAC -  Ready 
+12, Optimize the scripts ( WIP )
+
+13, Customaisation for endorsement methods
+
+14, Customaisation code for SACC 
+
+
+## Installations :
+ I request to use Linux distro OS,  comfortablly works in Alpine/ubuntu linux. BASH, python,ansible is required if you running in non linux OS. Soon I will be updating a Dockerfile.
+
+ Clone this repo  and run the ./hl-startup
+ ```
+ $ git clone https://github.com/ravinayag/HL-StartertKit.git
+ $ cd HL-Starterkit
+ $ ./hl-start.sh
+```
+If you want to run as a service on your system and access over webportal and access from port 8000. you can use '-d' to run as deamon in background
+
+```
+$ git clone https://github.com/ravinayag/HL-StartertKit.git
+$ cd HL-Starterkit
+$ docker-compose up   
+``` 
+Now you can access the tool from your web browser, 
+http://your_ip_address:8000
+
+Login/  passwd : term / term123 
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
+
+I have posted demo videos and tool can access from https://hltool.knowledgesociety.tech
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+

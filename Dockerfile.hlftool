@@ -1,0 +1,42 @@
+FROM ravinayag/webtty:latest
+MAINTAINER ravinayag@gmail.com
+
+RUN apk add -U --no-cache openssh-client sshpass python3 bash ansible git
+RUN echo "trap ' '2 20" >> /etc/profile
+RUN echo "trap  TSTP" >> /etc/profile
+RUN echo "trap 'exit' INT" >> /etc/profile
+RUN echo "export IGNOREEOF=40" >> /etc/profile
+
+WORKDIR /usr/src
+
+RUN git clone --depth 1 https://github.com/ravinayag/HL-StartertKit.git && \
+    mv HL-StartertKit /usr/src/app/HLF
+
+RUN echo 'cd /usr/src/app/HLF' >> /etc/profile.d/myscript.sh
+RUN echo './hl-start.sh' >> /etc/profile.d/myscript.sh
+RUN echo 'cd /' >> /etc/profile.d/myscript.sh
+RUN echo 'exit' >> /etc/profile.d/myscript.sh
+
+RUN chmod 755 /etc/profile.d/myscript.sh
+RUN chmod 775 -R /usr/src/app/HLF
+# Set-up term user
+RUN adduser -D -h /usr/src/app/HLF   -S -s /bin/bash term
+RUN echo 'term:term123' | chpasswd
+RUN chown term:nogroup -R /usr/src/app/HLF
+
+#COPY index.js /usr/src/app
+RUN rm -rf /var/cache/apk/*
+
+ENV NODE_ENV=production
+
+ENV REMOTE_SSH_SERVER=127.0.0.1 \
+    REMOTE_SSH_PORT=22 \
+    WETTY_PORT=3000
+
+#COPY run.sh /usr/src/app
+EXPOSE 3000
+
+CMD env | grep -v 'HOME\|PWD\|PATH' | while read env; do echo "export $env" >> /home/term/.bashrc ; done
+WORKDIR /usr/src/app
+CMD npm start -- -p 3000 --sshhost localhost --sshport 22 --base /
+

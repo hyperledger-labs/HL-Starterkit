@@ -1,0 +1,30 @@
+OrdererOrgs:
+  - Name: Orderer0
+    Domain: dstest.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer0
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.dstest.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+      - Hostname: peer1
+
+#    Template:
+#      Count: 1
+    Users:
+      Count: 1
+  
+  - Name: Org2
+    Domain: org2.dstest.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: peer0
+      - Hostname: peer1
+
+#    Template:
+#      Count: 1
+    Users:
+      Count: 1
